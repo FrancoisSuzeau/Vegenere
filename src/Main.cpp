@@ -23,8 +23,11 @@ int main(int argc, char **argv)
     std::cout <<"Your key after transformation is : " << _input_key.getInput() << std::endl;
 
     _encryption.VigenereEncryption(_input_text.getInput(), _input_key.getInput());
-
     std::cout << "Your message encrypted is : " << _encryption.getEncrypted() << std::endl;
+
+    _encryption.VigenereDecryption(_input_key.getInput());
+    std::cout << "Your message decrypted is : " << _encryption.getDecrypted() << std::endl;
+
     
     return EXIT_SUCCESS;
 

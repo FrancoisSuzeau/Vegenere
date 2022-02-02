@@ -26,6 +26,10 @@ Input::~Input()
 /***********************************************************************************************************************************************************************/
 void Input::captureInput(std::string const message)
 {
+    if((int) input_user.size() != 0)
+    {
+        input_user.assign("");
+    }
 
     std::cout << message << std::endl;
 
