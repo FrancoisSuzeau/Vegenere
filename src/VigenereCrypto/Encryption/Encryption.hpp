@@ -10,6 +10,7 @@
 
     #include <iostream>
     #include <string>
+    #include <map>
     
 
     class Encryption {
@@ -17,11 +18,21 @@
 
         private:
 
+            std::map<const char, unsigned int> alphabetic_code;
+            char transformLetter(const char m, const char b);
+
+            std::string text_encrypted;
 
         public:
 
             Encryption();
             ~Encryption();
+
+            void VigenereEncryption(std::string text, std::string key);
+            std::string getEncrypted() const;
+
+
+            
     };
 
 #endif
