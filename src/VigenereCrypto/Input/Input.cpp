@@ -42,35 +42,22 @@ void Input::transformInput()
 {
     this->transformToLowerCase();
 
-    //Delete space character
-    this->deleteAllSpecificCaract(' ');
-
     //delete all other caracter from 33 to 96 in the ASCII table
     for(int i(33); i < 97; i++)
     {
+        //don't know why but the € character is replace by ? and it is deleted here
         this->deleteAllSpecificCaract((char) i);
     }
 
     //delete ~ character
     this->deleteAllSpecificCaract('~');
 
-    //replace é, è, ç and à character to e, e c, a
+    //replace é, è, ç, ù and à character to e, e, c, u, a
+    //replace §, µ, £, ¨, ¤, and € by a space character that will be deleted later
     this->FindAndReplace();
 
-    //delete § character
-    int i(0);
-    int index(0);
-    for(std::string::iterator it = input_user.begin(); it !=input_user.end(); it++)
-    {
-        int code = (int) *it;
-        if(code < 0)
-        {
-            index = i;
-        }
-        i++;
-    }
-
-    input_user.erase(index, 1);
+    //Delete space character
+    this->deleteAllSpecificCaract(' ');
 }
 
 /***********************************************************************************************************************************************************************/
@@ -98,6 +85,24 @@ void Input::FindAndReplace()
                     break;
                 case -123: //replace à
                     input_user.replace(i, 1, "a");
+                    break;
+                case -105: //replace ù
+                    input_user.replace(i, 1, "u");
+                    break;
+                case -11: //replace §
+                    input_user.replace(i, 1, " ");
+                    break;
+                case -26: //replace µ
+                    input_user.replace(i, 1, " ");
+                    break;
+                case -100: //replace £
+                    input_user.replace(i, 1, " ");
+                    break;
+                case -7: //replace ¨
+                    input_user.replace(i, 1, " ");
+                    break;
+                case -49: //replace ¤
+                    input_user.replace(i, 1, " ");
                     break;
                 default:
                     break;
