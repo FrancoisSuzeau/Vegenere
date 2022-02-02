@@ -12,14 +12,14 @@ else
 endif
 
 ifeq ($(DEBUG), 1)
-	EXEC=../build/debug/VegenereDebug
+	EXEC=../build/debug/VigenereDebug
 else
-	EXEC=../build/release/VegenereRelease
+	EXEC=../build/release/VigenereRelease
 endif
 CC=g++
 
 # Generate source files list
-SRC=Main.cpp VigenereCrypto/Input.cpp
+SRC=Main.cpp VigenereCrypto/Input/Input.cpp VigenereCrypto/Encryption/Encryption.cpp
 
 OBJET=$(SRC:.cpp=.o)
 DEP=$(SRC:.cpp=.d)

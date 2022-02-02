@@ -2,7 +2,7 @@
 
     Creation : 01/02/2022
 
-    updated : 
+    Purpose : Module of Exercice 1 and 2 of Part One
 */
 
 #ifndef INPUT_H

@@ -1,4 +1,4 @@
-#include "VigenereCrypto/Input.hpp"
+#include "VigenereCrypto/Input/Input.hpp"
 
 
 

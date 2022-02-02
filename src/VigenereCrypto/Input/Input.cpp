@@ -2,7 +2,7 @@
 
     Creation : 01/02/2022
 
-    updated : 
+    Purpose : Declaration of the Input class
 */
 
 #include "Input.hpp"
@@ -54,7 +54,23 @@ void Input::transformInput()
     //delete ~ character
     this->deleteAllSpecificCaract('~');
 
+    //replace é, è, ç and à character to e, e c, a
     this->FindAndReplace();
+
+    //delete § character
+    int i(0);
+    int index(0);
+    for(std::string::iterator it = input_user.begin(); it !=input_user.end(); it++)
+    {
+        int code = (int) *it;
+        if(code < 0)
+        {
+            index = i;
+        }
+        i++;
+    }
+
+    input_user.erase(index, 1);
 }
 
 /***********************************************************************************************************************************************************************/
@@ -63,30 +79,31 @@ void Input::transformInput()
 void Input::FindAndReplace()
 {
     int i(0);
+    //goes through all character of the string
     for(std::string::iterator it = input_user.begin(); it !=input_user.end(); it++)
     {
-        int code = (int) *it;
-        if(code < 0)
+        int code = (int) *it; // recover the code of the character
+        if(code < 0) //not in ASCII table
         {
             switch (code)
             {
-                case -121:
+                case -121: //replace ç
                     input_user.replace(i, 1, "c");
                     break;
-                case -126:
+                case -126: //replace é
                     input_user.replace(i, 1, "e");
                     break;
-                case -118:
+                case -118: //replace è
                     input_user.replace(i, 1, "e");
                     break;
-                case -123:
+                case -123: //replace à
                     input_user.replace(i, 1, "a");
                     break;
                 default:
                     break;
             }
         }
-        i++;
+        i++; //recover the position of the next character
     }
 
 }
