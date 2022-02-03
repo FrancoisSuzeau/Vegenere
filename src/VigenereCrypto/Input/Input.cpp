@@ -13,7 +13,7 @@
 /***********************************************************************************************************************************************************************/
 Input::Input()
 {
-    
+    input_user = "none";
 }
 
 Input::~Input()
@@ -152,4 +152,17 @@ void Input::deleteAllSpecificCaract(const char c_to_find)
 std::string Input::getInput() const
 {
     return input_user;
+}
+
+void Input::setInput(const char *input)
+{
+    std::string tmp(input);
+    if((tmp != input_user) && (tmp != "\0"))
+    {
+        input_user.clear();
+        input_user.assign(input);
+
+        std::cout << "CHANGE" << std::endl;
+    }
+    
 }

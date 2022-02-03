@@ -29,6 +29,7 @@
             ~Input();
 
             void captureInput(std::string const message);
+            void setInput(const char *input);
             std::string getInput() const;
             void transformInput();
 
