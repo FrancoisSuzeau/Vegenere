@@ -9,6 +9,7 @@
 #define ANALYSIS_H
 
     #include <iostream>
+    #include <string>
     
 
     class Analysis {
@@ -16,12 +17,16 @@
 
         private:
 
+            std::string m_cypher_text;
             
+            unsigned int findOccurrence(std::string sequence);
 
         public:
 
-            Analysis();
+            Analysis(std::string cypher_text);
             ~Analysis();
+
+            void calculateOccurences();
     };
 
 #endif
