@@ -13,12 +13,12 @@ int main(int argc, char **argv)
 
     Input _input_text;
     Input _input_key;
-    // Encryption _encryption;
+    Encryption _encryption;
 
     // //Capture the text
     // _input_text.captureInput(">>> ENTER YOUR TEXT : ");
     // _input_text.transformInput();
-    // std::cout <<"Your initial message after transformation is : " << _input_text.getInput() << std::endl;
+    // std::cout <<"Your initial message after transformation is : " << _input_text.getInput(true) << std::endl;
 
     // //Catpure the key
     // _input_key.captureInput(">>> ENTER YOUR KEY : ");
@@ -71,8 +71,18 @@ int main(int argc, char **argv)
         ImGui::InputTextWithHint("Key", "Enter your key ...", buf_key, IM_ARRAYSIZE(buf_key));
         ImGui::End();
 
-        _input_text.setInput(buf_text);
-        _input_key.setInput(buf_key);
+        if(_input_text.setInput(buf_text))
+        {
+            _input_text.transformInput();
+            std::cout <<"Your initial message after transformation is : " << _input_text.getInput(true) << std::endl;
+        }
+
+        if(_input_key.setInput(buf_key))
+        {
+            _input_key.transformInput();
+            std::cout <<"Your key after transformation is : " << _input_key.getInput(true) << std::endl;
+        }
+        
 
         // Rendering
         ImGui::Render();

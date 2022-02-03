@@ -32,6 +32,8 @@
             SDL_Window  *m_window;
             SDL_GLContext gl_context;
 
+            void renderCypher(std::string encrypt, std::string decrypt);
+
         public:
 
             Graphics(int width, int height);
@@ -40,6 +42,8 @@
             bool initializeAll();
 
             void windowProcess(bool &terminate);
+
+            void renderVegenere(std::string encrypt, std::string decrypt);
 
             SDL_Window *getWindow() const;
             int getWidth() const;

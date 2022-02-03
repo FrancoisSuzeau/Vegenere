@@ -19,6 +19,7 @@
         private:
 
             std::string input_user;
+            std::string input_transormed;
             void transformToLowerCase();
             void deleteAllSpecificCaract(const char c_to_find);
             void FindAndReplace();
@@ -29,8 +30,8 @@
             ~Input();
 
             void captureInput(std::string const message);
-            void setInput(const char *input);
-            std::string getInput() const;
+            bool setInput(const char *input);
+            std::string getInput(bool get_transformed) const;
             void transformInput();
 
 

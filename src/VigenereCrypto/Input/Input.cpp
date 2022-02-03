@@ -14,6 +14,7 @@
 Input::Input()
 {
     input_user = "none";
+    input_transormed = "none";
 }
 
 Input::~Input()
@@ -44,6 +45,11 @@ void Input::captureInput(std::string const message)
 /***********************************************************************************************************************************************************************/
 void Input::transformInput()
 {
+    std::cout << "TRANSFORM" << std::endl;
+
+    input_transormed.clear();
+    input_transormed = input_user;
+
     this->transformToLowerCase();
 
     //delete all other caracter from 33 to 96 in the ASCII table
@@ -71,7 +77,7 @@ void Input::FindAndReplace()
 {
     int i(0);
     //goes through all character of the string
-    for(std::string::iterator it = input_user.begin(); it !=input_user.end(); it++)
+    for(std::string::iterator it = input_transormed.begin(); it !=input_transormed.end(); it++)
     {
         int code = (int) *it; // recover the code of the character
         if(code < 0) //not in ASCII table
@@ -79,34 +85,34 @@ void Input::FindAndReplace()
             switch (code)
             {
                 case -121: //replace ç
-                    input_user.replace(i, 1, "c");
+                    input_transormed.replace(i, 1, "c");
                     break;
                 case -126: //replace é
-                    input_user.replace(i, 1, "e");
+                    input_transormed.replace(i, 1, "e");
                     break;
                 case -118: //replace è
-                    input_user.replace(i, 1, "e");
+                    input_transormed.replace(i, 1, "e");
                     break;
                 case -123: //replace à
-                    input_user.replace(i, 1, "a");
+                    input_transormed.replace(i, 1, "a");
                     break;
                 case -105: //replace ù
-                    input_user.replace(i, 1, "u");
+                    input_transormed.replace(i, 1, "u");
                     break;
                 case -11: //replace §
-                    input_user.replace(i, 1, " ");
+                    input_transormed.replace(i, 1, " ");
                     break;
                 case -26: //replace µ
-                    input_user.replace(i, 1, " ");
+                    input_transormed.replace(i, 1, " ");
                     break;
                 case -100: //replace £
-                    input_user.replace(i, 1, " ");
+                    input_transormed.replace(i, 1, " ");
                     break;
                 case -7: //replace ¨
-                    input_user.replace(i, 1, " ");
+                    input_transormed.replace(i, 1, " ");
                     break;
                 case -49: //replace ¤
-                    input_user.replace(i, 1, " ");
+                    input_transormed.replace(i, 1, " ");
                     break;
                 default:
                     break;
@@ -124,7 +130,7 @@ void Input::transformToLowerCase()
 {
     //considering a string like an array we recover the iterator at the beginning and we copy it into the c character.
     //Then we use the tolower of the string class
-    std::for_each(input_user.begin(), input_user.end(), [] (char & c) {
+    std::for_each(input_transormed.begin(), input_transormed.end(), [] (char & c) {
         c=std::tolower(c);
     });
 }
@@ -137,32 +143,42 @@ void Input::deleteAllSpecificCaract(const char c_to_find)
     //the find method is use to determine if the character exist in the string.
     // if so then we enter the loop and eradicate the first occurence of the character
     //if not then find return the npos string and this is because there is no other occurence of the character in the string
-    while(input_user.find(c_to_find) != std::string::npos)
+    while(input_transormed.find(c_to_find) != std::string::npos)
     {
         //the erase method will delete the first occurence
         //find here start at the begin iterator and finish at the end and return the character to erase.
         //if not then we are not in the loop so ¯\_(ツ)_/¯
-        input_user.erase(std::find(input_user.begin(), input_user.end(), c_to_find));
+        input_transormed.erase(std::find(input_transormed.begin(), input_transormed.end(), c_to_find));
     }
 }
 
 /***********************************************************************************************************************************************************************/
 /****************************************************************************** getters/setters ************************************************************************/
 /***********************************************************************************************************************************************************************/
-std::string Input::getInput() const
+std::string Input::getInput(bool get_transformed) const
 {
+    if(get_transformed)
+    {
+        return input_transormed;
+    }
+
     return input_user;
+    
 }
 
-void Input::setInput(const char *input)
+bool Input::setInput(const char *input)
 {
     std::string tmp(input);
     if((tmp != input_user) && (tmp != "\0"))
     {
         input_user.clear();
-        input_user.assign(input);
+        input_user = input;
 
-        std::cout << "CHANGE" << std::endl;
+        return true;
+
+        // std::cout << "CHANGE" << std::endl;
     }
+
+    return false;
     
 }
