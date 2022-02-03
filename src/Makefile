@@ -19,7 +19,9 @@ endif
 CC=g++
 
 # Generate source files list
-SRC=Main.cpp VigenereCrypto/Input/Input.cpp VigenereCrypto/Encryption/Encryption.cpp
+SRC=Main.cpp
+SRC+=VigenereCrypto/Input/Input.cpp VigenereCrypto/Encryption/Encryption.cpp
+SRC+=BabageKasiki/Analysis.cpp
 
 OBJET=$(SRC:.cpp=.o)
 DEP=$(SRC:.cpp=.d)
