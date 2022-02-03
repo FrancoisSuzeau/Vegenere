@@ -10,6 +10,14 @@
 
     #include <iostream>
     #include <string>
+    #include <map>
+
+    typedef struct sequence_calculate {
+
+        unsigned int occurences = 0; //the total count of occurences the sequence has
+        bool already_calculate = false; //sometimes a sequence can be calculate twice so we prevent that here
+
+    } sequence_calculate;
     
 
     class Analysis {
@@ -18,6 +26,7 @@
         private:
 
             std::string m_cypher_text;
+            std::map<std::string, sequence_calculate> calculate_table;
             
             unsigned int findOccurrence(std::string sequence);
 
