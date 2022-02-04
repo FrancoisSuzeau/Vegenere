@@ -54,6 +54,7 @@ int main(int argc, char **argv)
     static char buf_key[64] = "\0";
 
     std::string error_msg = "";
+    bool open_Vigenere_window = false;
 
     while(!terminate)
     {
@@ -65,21 +66,25 @@ int main(int argc, char **argv)
         ImGui::NewFrame();
 
         ImGui::SetNextWindowPos(ImVec2(20, _graphic.getHeight()/2 - 100));
-        ImGui::SetNextWindowSize(ImVec2(350, 130));
+        ImGui::SetNextWindowSize(ImVec2(350, 120));
 
         ImGui::Begin("User input", NULL, window_flags);
         if(ImGui::InputTextWithHint("Text", "Enter your text ...", buf_text, IM_ARRAYSIZE(buf_text)))
         {
             _input_text.setInput(buf_text);
             _input_text.transformInput();
-            std::cout <<"Your initial message after transformation is : " << _input_text.getInput(true) << std::endl;
+
+            //! delete before merging
+            // std::cout <<"Your initial message after transformation is : " << _input_text.getInput(true) << std::endl;
         }
 
         if(ImGui::InputTextWithHint("Key", "Enter your key ...", buf_key, IM_ARRAYSIZE(buf_key)))
         {
             _input_key.setInput(buf_key);
             _input_key.transformInput();
-            std::cout <<"Your key after transformation is : " << _input_key.getInput(true) << std::endl;
+
+            //! delete before merging
+            // std::cout <<"Your key after transformation is : " << _input_key.getInput(true) << std::endl;
         }
 
         if(ImGui::Button("Encrypt !"))
@@ -88,16 +93,26 @@ int main(int argc, char **argv)
             {
                 error_msg.clear();
                 _encryption.VigenereEncryption(_input_text.getInput(true), _input_key.getInput(true));
-                std::cout << "Your message encrypted is : " << _encryption.getEncrypted() << std::endl;
+                _encryption.VigenereDecryption(_input_key.getInput(true));
+
+                open_Vigenere_window = true;
             }
             else
             {
                 error_msg = (strcmp(buf_text, "\0") == 0) ? "Text missing !" : "Key missing !";
+                open_Vigenere_window = false;
             }
 
         }
 
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), error_msg.c_str());
+
+        if(open_Vigenere_window)
+        {
+            _graphic.renderVegenere(_encryption.getEncrypted(), _encryption.getDecrypted(), &open_Vigenere_window);
+        }
+
+        
 
         ImGui::End();
 

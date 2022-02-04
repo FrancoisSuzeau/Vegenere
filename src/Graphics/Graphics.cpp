@@ -101,25 +101,24 @@ void Graphics::windowProcess(bool &terminate)
 /***********************************************************************************************************************************************************************/
 /************************************************************************* renderVegenere ******************************************************************************/
 /***********************************************************************************************************************************************************************/
-void Graphics::renderVegenere(std::string encrypt, std::string decrypt)
+void Graphics::renderVegenere(std::string encrypt, std::string decrypt, bool *open)
 {
-    this->renderCypher(encrypt, decrypt);
+    this->renderCypher(encrypt, decrypt, open);
 }
 
 /***********************************************************************************************************************************************************************/
 /************************************************************************* renderCypher ********************************************************************************/
 /***********************************************************************************************************************************************************************/
-void Graphics::renderCypher(std::string encrypt, std::string decrypt)
+void Graphics::renderCypher(std::string encrypt, std::string decrypt, bool *open)
 {
-    ImGui::SetNextWindowPos(ImVec2(20, 2 - 100));
-    ImGui::SetNextWindowSize(ImVec2(350, 80));
+    ImGui::SetNextWindowPos(ImVec2(m_window_w/2, m_window_h/2));
+    ImGui::SetNextWindowSize(ImVec2(50 *encrypt.size(), 80));
 
-    ImGui::Begin("Cypher data", NULL, ImGuiWindowFlags_NoResize);
-    ImGui::Text("Encrypted text : ");
-    ImGui::BulletText(encrypt.c_str());
-
-    ImGui::Text("Decrypted text : ");
-    ImGui::BulletText(decrypt.c_str());
+    ImGui::Begin("Cypher data", open);
+    ImGui::BulletText("Your text encrypted : ");
+    ImGui::SameLine(); ImGui::TextColored(ImVec4(50.0f/255.0f, 205.0f/255.0f, 50.0f/255.0f, 1.0f), encrypt.c_str());
+    ImGui::BulletText("Your text decrypted : ");
+    ImGui::SameLine(); ImGui::TextColored(ImVec4(30.0f/255.0f, 144.0f/255.0f, 1.0f, 1.0f), decrypt.c_str());
         
     ImGui::End();
 }

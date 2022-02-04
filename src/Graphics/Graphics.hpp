@@ -32,7 +32,7 @@
             SDL_Window  *m_window;
             SDL_GLContext gl_context;
 
-            void renderCypher(std::string encrypt, std::string decrypt);
+            void renderCypher(std::string encrypt, std::string decrypt, bool *open);
 
         public:
 
@@ -43,7 +43,7 @@
 
             void windowProcess(bool &terminate);
 
-            void renderVegenere(std::string encrypt, std::string decrypt);
+            void renderVegenere(std::string encrypt, std::string decrypt, bool *open);
 
             SDL_Window *getWindow() const;
             int getWidth() const;
