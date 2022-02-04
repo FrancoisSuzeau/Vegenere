@@ -50,6 +50,10 @@ int main(int argc, char **argv)
 
     ImGuiWindowFlags window_flags = 0;
     window_flags |= ImGuiWindowFlags_NoResize;
+    static char buf_text[64] = "\0";
+    static char buf_key[64] = "\0";
+
+    std::string error_msg = "";
 
     while(!terminate)
     {
@@ -60,29 +64,42 @@ int main(int argc, char **argv)
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        static char buf_text[64] = "\0";
-        static char buf_key[64] = "\0";
-
         ImGui::SetNextWindowPos(ImVec2(20, _graphic.getHeight()/2 - 100));
-        ImGui::SetNextWindowSize(ImVec2(350, 80));
+        ImGui::SetNextWindowSize(ImVec2(350, 130));
 
         ImGui::Begin("User input", NULL, window_flags);
-        ImGui::InputTextWithHint("Text", "Enter your text ...", buf_text, IM_ARRAYSIZE(buf_text));
-        ImGui::InputTextWithHint("Key", "Enter your key ...", buf_key, IM_ARRAYSIZE(buf_key));
-        ImGui::End();
-
-        if(_input_text.setInput(buf_text))
+        if(ImGui::InputTextWithHint("Text", "Enter your text ...", buf_text, IM_ARRAYSIZE(buf_text)))
         {
+            _input_text.setInput(buf_text);
             _input_text.transformInput();
             std::cout <<"Your initial message after transformation is : " << _input_text.getInput(true) << std::endl;
         }
 
-        if(_input_key.setInput(buf_key))
+        if(ImGui::InputTextWithHint("Key", "Enter your key ...", buf_key, IM_ARRAYSIZE(buf_key)))
         {
+            _input_key.setInput(buf_key);
             _input_key.transformInput();
             std::cout <<"Your key after transformation is : " << _input_key.getInput(true) << std::endl;
         }
-        
+
+        if(ImGui::Button("Encrypt !"))
+        {
+            if((strcmp(buf_text, "\0") != 0) && (strcmp(buf_key, "\0") != 0))
+            {
+                error_msg.clear();
+                _encryption.VigenereEncryption(_input_text.getInput(true), _input_key.getInput(true));
+                std::cout << "Your message encrypted is : " << _encryption.getEncrypted() << std::endl;
+            }
+            else
+            {
+                error_msg = (strcmp(buf_text, "\0") == 0) ? "Text missing !" : "Key missing !";
+            }
+
+        }
+
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), error_msg.c_str());
+
+        ImGui::End();
 
         // Rendering
         ImGui::Render();

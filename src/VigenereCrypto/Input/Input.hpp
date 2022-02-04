@@ -30,7 +30,7 @@
             ~Input();
 
             void captureInput(std::string const message);
-            bool setInput(const char *input);
+            void setInput(const char *input);
             std::string getInput(bool get_transformed) const;
             void transformInput();
 

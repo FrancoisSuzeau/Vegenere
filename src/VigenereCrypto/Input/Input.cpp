@@ -45,8 +45,6 @@ void Input::captureInput(std::string const message)
 /***********************************************************************************************************************************************************************/
 void Input::transformInput()
 {
-    std::cout << "TRANSFORM" << std::endl;
-
     input_transormed.clear();
     input_transormed = input_user;
 
@@ -84,37 +82,26 @@ void Input::FindAndReplace()
         {
             switch (code)
             {
-                case -121: //replace ç
+                case -61: //Graphical input create this unknown caracter before all other special caracter (ç, é, è, à, ù)
+                    input_transormed.replace(i, 1, " ");
+                    break;
+                case -89: //replace ç in graphical input and -121 in prompt input
                     input_transormed.replace(i, 1, "c");
                     break;
-                case -126: //replace é
+                case -87: //replace é in graphical input and -127 in prompt input
                     input_transormed.replace(i, 1, "e");
                     break;
-                case -118: //replace è
+                case -88: //replace è in graphical input and -118 in prompt input
                     input_transormed.replace(i, 1, "e");
                     break;
-                case -123: //replace à
+                case -96: //replace à in graphical input and -123 in prompt input
                     input_transormed.replace(i, 1, "a");
                     break;
-                case -105: //replace ù
+                case -71: //replace ù in graphical input and -105 in prompt input
                     input_transormed.replace(i, 1, "u");
                     break;
-                case -11: //replace §
+                default: //replace §, µ, £, ¨, ¤ by a space that will be delete later
                     input_transormed.replace(i, 1, " ");
-                    break;
-                case -26: //replace µ
-                    input_transormed.replace(i, 1, " ");
-                    break;
-                case -100: //replace £
-                    input_transormed.replace(i, 1, " ");
-                    break;
-                case -7: //replace ¨
-                    input_transormed.replace(i, 1, " ");
-                    break;
-                case -49: //replace ¤
-                    input_transormed.replace(i, 1, " ");
-                    break;
-                default:
                     break;
             }
         }
@@ -166,19 +153,12 @@ std::string Input::getInput(bool get_transformed) const
     
 }
 
-bool Input::setInput(const char *input)
+void Input::setInput(const char *input)
 {
     std::string tmp(input);
     if((tmp != input_user) && (tmp != "\0"))
     {
         input_user.clear();
         input_user = input;
-
-        return true;
-
-        // std::cout << "CHANGE" << std::endl;
-    }
-
-    return false;
-    
+    }    
 }
