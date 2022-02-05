@@ -5,6 +5,7 @@
 #include "Graphics/Graphics.hpp"
 
 #include <cassert>
+#include <fstream>
 
 void makeItPrompt()
 {
@@ -39,6 +40,13 @@ void makeItPrompt()
 
 void makeItGraphical()
 {
+    std::ofstream flux("imgui.ini");
+    if(flux)
+    {
+        flux.close();
+        system("del imgui.ini");
+    }
+
     Input _input_text;
     Input _input_key;
     Encryption _encryption;
@@ -106,6 +114,7 @@ void makeItGraphical()
             {
                 error_msg = (strcmp(buf_text, "\0") == 0) ? "Text missing !" : "Key missing !";
                 open_Vigenere_window = false;
+                do_analysis = false;
             }
 
         }
@@ -116,7 +125,7 @@ void makeItGraphical()
         if(open_Vigenere_window)
         {
             _graphic.renderVegenere(_encryption.getEncrypted(), _encryption.getDecrypted(), &open_Vigenere_window);
-            _analysis.setCypherText("abcdefghijklmnopqrstuvwxyzabcdmnoabcabcefgghixyz");
+            _analysis.setCypherText("abcdefghijklmnopqrstuvwxyzabcdmnoabcabcefgghixyzuvwvwx");
             if(do_analysis)
             {
                 _analysis.calculateOccurences();

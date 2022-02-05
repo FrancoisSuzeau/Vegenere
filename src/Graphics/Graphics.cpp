@@ -20,7 +20,7 @@ Graphics::~Graphics()
 {
     if(array_hist != nullptr)
     {
-        free(array_hist);
+        delete array_hist;
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -137,12 +137,13 @@ void Graphics::renderAnalysis(Analysis analysis, bool *open)
 
     // ImGui::SetNextWindowPos(ImVec2(m_window_w/2, m_window_h/2));
     ImGui::SetNextWindowPos(ImVec2(0,0));
-    // ImGui::SetNextWindowSize(ImVec2(300, 150));
+    ImGui::SetNextWindowSize(ImVec2(25 * datas.size() * 2, 150));
 
     ImGui::Begin("Analysis", open);
     if(array_hist)
-    {
-        ImGui::PlotHistogram("", array_hist, datas.size(), 0, NULL, 0.0f, 1.0f, ImVec2(80, 80.0f));
+    {   
+        ImGui::Text(" Frequency of occurence");
+        ImGui::PlotHistogram("", array_hist, datas.size() * 2, 0, NULL, 0.0f, 1.0f, ImVec2(20 * datas.size() *2, 80.0f));
     }
     
     ImGui::End();
@@ -155,10 +156,10 @@ void Graphics::extractData(std::map<std::string, sequence_calculate> datas)
 {
     if(array_hist != nullptr)
     {
-        free(array_hist);
+        delete array_hist;
     }
 
-    array_hist = (float*) malloc(datas.size());
+    array_hist = new float[datas.size() * 2];
     assert(array_hist);
     int i(0);
 
@@ -166,8 +167,16 @@ void Graphics::extractData(std::map<std::string, sequence_calculate> datas)
     {
         array_hist[i] = (float) it->second.occurences / (float) datas.size();
         std::cout << it->first << std::endl;
-        std::cout << it->second.occurences << std::endl;
-        i++;
+        i = i+2;
+    }
+
+    //just to make inner spacing in histogram
+    for(int j(0); j < (int) datas.size() * 2; j++)
+    {
+        if(j%2 == 1)
+        {
+            array_hist[j] = 0;
+        }
     }
 }
 
