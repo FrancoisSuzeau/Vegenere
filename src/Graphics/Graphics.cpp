@@ -12,11 +12,17 @@
 /***********************************************************************************************************************************************************************/
 Graphics::Graphics(int width, int height) : m_window_w(width), m_window_h(height)
 {
-
+    array_hist = nullptr;
+    already_extract = false;
 }
 
 Graphics::~Graphics()
 {
+    if(array_hist != nullptr)
+    {
+        free(array_hist);
+    }
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
@@ -103,15 +109,7 @@ void Graphics::windowProcess(bool &terminate)
 /***********************************************************************************************************************************************************************/
 void Graphics::renderVegenere(std::string encrypt, std::string decrypt, bool *open)
 {
-    this->renderCypher(encrypt, decrypt, open);
-}
-
-/***********************************************************************************************************************************************************************/
-/************************************************************************* renderCypher ********************************************************************************/
-/***********************************************************************************************************************************************************************/
-void Graphics::renderCypher(std::string encrypt, std::string decrypt, bool *open)
-{
-    ImGui::SetNextWindowPos(ImVec2(m_window_w/2, m_window_h/2));
+    ImGui::SetNextWindowPos(ImVec2(m_window_w/2, 40));
     ImGui::SetNextWindowSize(ImVec2(50 *encrypt.size(), 80));
 
     ImGui::Begin("Cypher data", open);
@@ -122,6 +120,52 @@ void Graphics::renderCypher(std::string encrypt, std::string decrypt, bool *open
         
     ImGui::End();
 }
+
+/***********************************************************************************************************************************************************************/
+/*********************************************************************** renderAnalysis ********************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Graphics::renderAnalysis(Analysis analysis, bool *open)
+{
+    // ImGui::SetNextWindowPos(ImVec2(m_window_w/2, m_window_h/2));
+    ImGui::SetNextWindowPos(ImVec2(0,0));
+    // ImGui::SetNextWindowSize(ImVec2(300, 150));
+
+    ImGui::Begin("Analysis", open);
+    if(already_extract == false)
+    {
+        this->extractData(analysis.getCalculationTable());
+        already_extract = true;
+    }
+    
+    ImGui::PlotHistogram("", array_hist, IM_ARRAYSIZE(array_hist), 0, NULL, 0.0f, 1.0f, ImVec2(80, 80.0f));
+    ImGui::End();
+}
+
+/***********************************************************************************************************************************************************************/
+/*********************************************************************** renderAnalysis ********************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Graphics::extractData(std::map<std::string, sequence_calculate> datas)
+{
+    if(array_hist != nullptr)
+    {
+        free(array_hist);
+    }
+
+    array_hist = (float*) malloc(datas.size());
+    assert(array_hist);
+    
+    int i(0);
+
+    for(std::map<std::string, sequence_calculate>::iterator it = datas.begin(); it != datas.end(); it++)
+    {
+        array_hist[i] = (float) it->second.occurences / (float) datas.size();
+
+        std::cout << it->second.occurences << std::endl;
+
+        i++;
+    }
+}
+
 
 /***********************************************************************************************************************************************************************/
 /************************************************************************* getters/setters *****************************************************************************/
@@ -139,4 +183,9 @@ int Graphics::getWidth() const
 int Graphics::getHeight() const
 {
     return m_window_h;
+}
+
+void Graphics::setExtract(bool const new_val)
+{
+    already_extract = new_val;
 }

@@ -15,6 +15,11 @@ Analysis::Analysis(std::string cyper_text) : m_cypher_text(cyper_text)
 
 }
 
+Analysis::Analysis() : m_cypher_text("none")
+{
+
+}
+
 Analysis::~Analysis()
 {
 
@@ -27,6 +32,7 @@ void Analysis::calculateOccurences()
 {
     //just to be sure, we cleazr the map because i still don't know how the OS initialize it
     calculate_table.clear();
+    std::map<std::string, sequence_calculate> tmp;
 
     //this loop move the position of the first letter of the sequence
     //note that we dont want the last substring of the last 3 letter of the cypher text
@@ -46,7 +52,7 @@ void Analysis::calculateOccurences()
 
             // std::cout << "SEQUENCE : " << sequence << std::endl;
 
-            if(calculate_table[sequence].already_calculate == false)
+            if(tmp[sequence].already_calculate == false)
             {
                 calculate_table[sequence].occurences = this->findOccurrence(sequence);
                 calculate_table[sequence].already_calculate = true;
@@ -79,4 +85,18 @@ unsigned int Analysis::findOccurrence(std::string sequence)
     }
 
     return count;
+}
+
+/***********************************************************************************************************************************************************************/
+/************************************************************************* getters/setters *****************************************************************************/
+/***********************************************************************************************************************************************************************/
+std::map<std::string, sequence_calculate> Analysis::getCalculationTable() const
+{
+    return calculate_table;
+}
+
+void Analysis::setCypherText(std::string const text)
+{
+    m_cypher_text.clear();
+    m_cypher_text = text;
 }

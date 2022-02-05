@@ -6,15 +6,11 @@
 
 #include <cassert>
 
-int main(int argc, char **argv)
+void makeItPrompt()
 {
-    (void)argc;
-    (void)argv;
-
-    Input _input_text;
-    Input _input_key;
-    Encryption _encryption;
-
+    // Input _input_text;
+    // Input _input_key;
+    // Encryption _encryption;
     // //Capture the text
     // _input_text.captureInput(">>> ENTER YOUR TEXT : ");
     // _input_text.transformInput();
@@ -23,25 +19,32 @@ int main(int argc, char **argv)
     // //Catpure the key
     // _input_key.captureInput(">>> ENTER YOUR KEY : ");
     // _input_key.transformInput();
-    // std::cout <<"Your key after transformation is : " << _input_key.getInput() << std::endl;
+    // std::cout <<"Your key after transformation is : " << _input_key.getInput(true) << std::endl;
 
     // //Encrypt text
-    // _encryption.VigenereEncryption(_input_text.getInput(), _input_key.getInput());
+    // _encryption.VigenereEncryption(_input_text.getInput(true), _input_key.getInput(true));
     // std::cout << "Your message encrypted is : " << _encryption.getEncrypted() << std::endl;
 
     // //Decrypt text
-    // _encryption.VigenereDecryption(_input_key.getInput());
+    // _encryption.VigenereDecryption(_input_key.getInput(true));
     // std::cout << "Your message decrypted is : " << _encryption.getDecrypted() << std::endl;
 
-    // Analysis _analysis(_encryption.getEncrypted());
+    // // Analysis _analysis(_encryption.getEncrypted());
     // Analysis _analysis("abcdefghijklmnopqrstuvwxyzabcdmnoabc");
+    Analysis _analysis("abcdabc");
 
-    // //Calculate all occurences by sequences of 3 or more letters
-    // _analysis.calculateOccurences();
+    // Calculate all occurences by sequences of 3 or more letters
+    _analysis.calculateOccurences();
+}
 
+void makeItGraphical()
+{
+    Input _input_text;
+    Input _input_key;
+    Encryption _encryption;
+    Analysis _analysis;
     Graphics _graphic(1280, 800);
     assert(_graphic.initializeAll());
-
 
     bool terminate = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -55,6 +58,7 @@ int main(int argc, char **argv)
 
     std::string error_msg = "";
     bool open_Vigenere_window = false;
+    bool do_analysis = false;
 
     while(!terminate)
     {
@@ -96,6 +100,7 @@ int main(int argc, char **argv)
                 _encryption.VigenereDecryption(_input_key.getInput(true));
 
                 open_Vigenere_window = true;
+                do_analysis = true;
             }
             else
             {
@@ -106,15 +111,23 @@ int main(int argc, char **argv)
         }
 
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), error_msg.c_str());
+        ImGui::End();
 
         if(open_Vigenere_window)
         {
             _graphic.renderVegenere(_encryption.getEncrypted(), _encryption.getDecrypted(), &open_Vigenere_window);
+            _analysis.setCypherText("abcdefghiabcdef");
+            if(do_analysis)
+            {
+                _analysis.calculateOccurences();
+                do_analysis = false;
+                _graphic.setExtract(false);
+            }
+
+            _graphic.renderAnalysis(_analysis, &open_Vigenere_window);
         }
 
         
-
-        ImGui::End();
 
         // Rendering
         ImGui::Render();
@@ -124,8 +137,39 @@ int main(int argc, char **argv)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(_graphic.getWindow());
 
+
+
     }
+}
+
+int main(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    // std::string choice("none");
+
+    // std::cout << ">> You have the possibility to work graphicaly or with your terminal.\n>> Note that the graphical way only work on windows systems." << std::endl;
+
+    // do
+    // {
+    //     std::cout << ">> Select your choice :\n- 1 : Graphical\n- 2 : With a terminal" << std::endl;
+    //     choice.clear();
+    //     std::cin >> choice;
+
+    // } while ((choice != "1") && (choice != "2"));
+    
+    // if(choice == "1")
+    // {
+    //     makeItGraphical();
+    // }
+    // else
+    // {
+    //     makeItPrompt();
+    // }
+
+    // makeItGraphical();
+    makeItPrompt();
     
     return EXIT_SUCCESS;
-
 }

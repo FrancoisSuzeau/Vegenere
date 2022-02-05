@@ -33,9 +33,13 @@
         public:
 
             Analysis(std::string cypher_text);
+            Analysis();
             ~Analysis();
 
             void calculateOccurences();
+
+            std::map<std::string, sequence_calculate> getCalculationTable() const;
+            void setCypherText(std::string const text);
     };
 
 #endif

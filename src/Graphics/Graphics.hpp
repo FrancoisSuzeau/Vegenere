@@ -9,6 +9,7 @@
 #define GRAPHIC_H
 
     #include <iostream>
+    #include <vector>
     
     #include "../lib/imgui/imgui.h"
     #include "../lib/imgui/imgui_impl_sdl.h"
@@ -19,6 +20,8 @@
     #else
     #include <SDL2/SDL_opengl.h>
     #endif
+
+    #include "../BabageKasiki/Analysis.hpp"
     
 
     class Graphics {
@@ -32,7 +35,11 @@
             SDL_Window  *m_window;
             SDL_GLContext gl_context;
 
-            void renderCypher(std::string encrypt, std::string decrypt, bool *open);
+            float  *array_hist;
+            bool already_extract;
+
+            void extractData(std::map<std::string, sequence_calculate> datas);
+            
 
         public:
 
@@ -44,10 +51,13 @@
             void windowProcess(bool &terminate);
 
             void renderVegenere(std::string encrypt, std::string decrypt, bool *open);
+            void renderAnalysis(Analysis analysis, bool *open);
 
             SDL_Window *getWindow() const;
             int getWidth() const;
             int getHeight() const;
+
+            void setExtract(bool const new_val);
     };
 
 #endif
