@@ -23,6 +23,7 @@ Graphics::~Graphics()
         delete array_hist;
     }
 
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
@@ -58,8 +59,9 @@ bool Graphics::initializeAll()
     }
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-
-    m_window = SDL_CreateWindow("TP Vegenere", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_window_w, m_window_h, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+    
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    m_window = SDL_CreateWindow("TP Vegenere", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_window_w, m_window_h, window_flags);
     if(m_window == NULL)
     {
         std::cout << ">> Creating window : ERROR : " << SDL_GetError() << std::endl;
@@ -109,10 +111,10 @@ void Graphics::windowProcess(bool &terminate)
 /***********************************************************************************************************************************************************************/
 void Graphics::renderVegenere(std::string encrypt, std::string decrypt, bool *open)
 {
-    ImGui::SetNextWindowPos(ImVec2(m_window_w/2, 40));
-    ImGui::SetNextWindowSize(ImVec2(50 *encrypt.size(), 80));
+    ImGui::SetNextWindowPos(ImVec2(20, m_window_h/2 - 250));
+    ImGui::SetNextWindowSize(ImVec2(210 + (10 * encrypt.size()) , 80));
 
-    ImGui::Begin("Cypher data", open);
+    ImGui::Begin("Cypher data");
     ImGui::BulletText("Your text encrypted : ");
     ImGui::SameLine(); ImGui::TextColored(ImVec4(50.0f/255.0f, 205.0f/255.0f, 50.0f/255.0f, 1.0f), encrypt.c_str());
     ImGui::BulletText("Your text decrypted : ");
@@ -136,16 +138,21 @@ void Graphics::renderAnalysis(Analysis analysis, bool *open)
     }
 
     // ImGui::SetNextWindowPos(ImVec2(m_window_w/2, m_window_h/2));
-    ImGui::SetNextWindowPos(ImVec2(0,0));
+    ImGui::SetNextWindowPos(ImVec2(m_window_w/2, m_window_h/2 - 100));
     ImGui::SetNextWindowSize(ImVec2(25 * datas.size() * 2, 150));
 
-    ImGui::Begin("Analysis", open);
+    ImGui::Begin("Analysis");
     if(array_hist)
     {   
         ImGui::Text(" Frequency of occurence");
-        ImGui::PlotHistogram("", array_hist, datas.size() * 2, 0, NULL, 0.0f, 1.0f, ImVec2(20 * datas.size() *2, 80.0f));
+        ImGui::PlotHistogram("", array_hist, datas.size() * 2, 0, NULL, 0.0f, 1.0f, ImVec2(22 * datas.size() *2, 80.0f));
     }
     
+    for(std::vector<std::string>::iterator it = occ_hist.begin(); it != occ_hist.end(); it++)
+    {
+        ImGui::Text(it[0].c_str());
+        ImGui::SameLine();
+    }
     ImGui::End();
 }
 
@@ -163,14 +170,25 @@ void Graphics::extractData(std::map<std::string, sequence_calculate> datas)
     assert(array_hist);
     int i(0);
 
+    occ_hist.clear();
+
     for(std::map<std::string, sequence_calculate>::iterator it = datas.begin(); it != datas.end(); ++it)
     {
         array_hist[i] = (float) it->second.occurences / (float) datas.size();
-        std::cout << it->first << std::endl;
+
+        if(i == 0)
+        {
+            occ_hist.push_back(it->first);
+        }
+        else
+        {
+            occ_hist.push_back(" " + it->first + " ");
+        }
+
         i = i+2;
     }
 
-    //just to make inner spacing in histogram
+    //just to make inner space in histogram
     for(int j(0); j < (int) datas.size() * 2; j++)
     {
         if(j%2 == 1)
@@ -178,6 +196,8 @@ void Graphics::extractData(std::map<std::string, sequence_calculate> datas)
             array_hist[j] = 0;
         }
     }
+
+
 }
 
 /***********************************************************************************************************************************************************************/

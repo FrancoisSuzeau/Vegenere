@@ -38,6 +38,7 @@
             bool already_extract;
             void extractData(std::map<std::string, sequence_calculate> datas);
             float *array_hist;
+            std::vector<std::string> occ_hist;
             
 
         public:
