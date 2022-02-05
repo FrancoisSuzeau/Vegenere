@@ -108,7 +108,7 @@ void Analysis::calculateKeylength()
 void Analysis::extractSequenceToAnalyse()
 {
     better_sequence.clear();
-    for(std::map<std::string, sequence_calculate>::iterator it = occcurence_table.begin(); it != occcurence_table.end(); it++)
+    for(std::map<std::string, sequence_calculate>::iterator it = occcurence_table.begin(); it != occcurence_table.end(); ++it)
     {
         if((it->second.occurences >= 2))
         {

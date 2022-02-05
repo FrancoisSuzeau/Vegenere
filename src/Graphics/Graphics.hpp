@@ -35,10 +35,9 @@
             SDL_Window  *m_window;
             SDL_GLContext gl_context;
 
-            float  *array_hist;
             bool already_extract;
-
             void extractData(std::map<std::string, sequence_calculate> datas);
+            float *array_hist;
             
 
         public:

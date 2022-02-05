@@ -12,8 +12,8 @@
 /***********************************************************************************************************************************************************************/
 Graphics::Graphics(int width, int height) : m_window_w(width), m_window_h(height)
 {
-    array_hist = nullptr;
     already_extract = false;
+    array_hist = nullptr;
 }
 
 Graphics::~Graphics()
@@ -126,23 +126,30 @@ void Graphics::renderVegenere(std::string encrypt, std::string decrypt, bool *op
 /***********************************************************************************************************************************************************************/
 void Graphics::renderAnalysis(Analysis analysis, bool *open)
 {
+    
+    std::map<std::string, sequence_calculate> datas = analysis.getCalculationTable(SEQUENCE_A);
+    
+    if(already_extract == false)
+    {
+        this->extractData(datas);
+        already_extract = true;
+    }
+
     // ImGui::SetNextWindowPos(ImVec2(m_window_w/2, m_window_h/2));
     ImGui::SetNextWindowPos(ImVec2(0,0));
     // ImGui::SetNextWindowSize(ImVec2(300, 150));
 
     ImGui::Begin("Analysis", open);
-    if(already_extract == false)
+    if(array_hist)
     {
-        // this->extractData(analysis.getCalculationTable());
-        already_extract = true;
+        ImGui::PlotHistogram("", array_hist, datas.size(), 0, NULL, 0.0f, 1.0f, ImVec2(80, 80.0f));
     }
     
-    ImGui::PlotHistogram("", array_hist, IM_ARRAYSIZE(array_hist), 0, NULL, 0.0f, 1.0f, ImVec2(80, 80.0f));
     ImGui::End();
 }
 
 /***********************************************************************************************************************************************************************/
-/*********************************************************************** renderAnalysis ********************************************************************************/
+/*********************************************************************** extractData ***********************************************************************************/
 /***********************************************************************************************************************************************************************/
 void Graphics::extractData(std::map<std::string, sequence_calculate> datas)
 {
@@ -153,19 +160,16 @@ void Graphics::extractData(std::map<std::string, sequence_calculate> datas)
 
     array_hist = (float*) malloc(datas.size());
     assert(array_hist);
-    
     int i(0);
 
-    for(std::map<std::string, sequence_calculate>::iterator it = datas.begin(); it != datas.end(); it++)
+    for(std::map<std::string, sequence_calculate>::iterator it = datas.begin(); it != datas.end(); ++it)
     {
         array_hist[i] = (float) it->second.occurences / (float) datas.size();
-
+        std::cout << it->first << std::endl;
         std::cout << it->second.occurences << std::endl;
-
         i++;
     }
 }
-
 
 /***********************************************************************************************************************************************************************/
 /************************************************************************* getters/setters *****************************************************************************/

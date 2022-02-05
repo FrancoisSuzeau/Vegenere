@@ -116,12 +116,13 @@ void makeItGraphical()
         if(open_Vigenere_window)
         {
             _graphic.renderVegenere(_encryption.getEncrypted(), _encryption.getDecrypted(), &open_Vigenere_window);
-            _analysis.setCypherText("abcdefghiabcdef");
+            _analysis.setCypherText("abcdefghijklmnopqrstuvwxyzabcdmnoabcabcefgghixyz");
             if(do_analysis)
             {
                 _analysis.calculateOccurences();
                 do_analysis = false;
                 _graphic.setExtract(false);
+                _analysis.calculateKeylength();
             }
 
             _graphic.renderAnalysis(_analysis, &open_Vigenere_window);
@@ -168,8 +169,8 @@ int main(int argc, char **argv)
     //     makeItPrompt();
     // }
 
-    // makeItGraphical();
-    makeItPrompt();
+    makeItGraphical();
+    // makeItPrompt();
     
     return EXIT_SUCCESS;
 }
