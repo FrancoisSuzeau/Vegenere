@@ -30,11 +30,11 @@ void makeItPrompt()
     // std::cout << "Your message decrypted is : " << _encryption.getDecrypted() << std::endl;
 
     // // Analysis _analysis(_encryption.getEncrypted());
-    // Analysis _analysis("abcdefghijklmnopqrstuvwxyzabcdmnoabc");
-    Analysis _analysis("abcdabc");
+    Analysis _analysis("abcdefghijklmnopqrstuvwxyzabcdmnoabc");
 
     // Calculate all occurences by sequences of 3 or more letters
     _analysis.calculateOccurences();
+    _analysis.calculateKeylength();
 }
 
 void makeItGraphical()

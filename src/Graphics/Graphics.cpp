@@ -133,7 +133,7 @@ void Graphics::renderAnalysis(Analysis analysis, bool *open)
     ImGui::Begin("Analysis", open);
     if(already_extract == false)
     {
-        this->extractData(analysis.getCalculationTable());
+        // this->extractData(analysis.getCalculationTable());
         already_extract = true;
     }
     
