@@ -11,6 +11,8 @@
     #include <iostream>
     #include <string>
     #include <map>
+    #include <vector>
+    #include <algorithm>
 
     #define OCCURENCE 1
     #define SEQUENCE_A 2
@@ -19,7 +21,8 @@
 
         unsigned int occurences = 0; //the total count of occurences the sequence has
         bool already_calculate = false; //sometimes a sequence can be calculate twice so we prevent that here
-        unsigned int distance_between_occ = 0;
+        std::vector<unsigned int> distances;
+        
 
     } sequence_calculate;
     
@@ -34,6 +37,7 @@
             std::map<std::string, sequence_calculate> better_sequence;
             
             void findOccurrence(std::string sequence);
+            void calculateDistance();
             void extractSequenceToAnalyse();
 
 

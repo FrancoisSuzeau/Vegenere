@@ -73,8 +73,7 @@ void Analysis::findOccurrence(std::string sequence)
 
     std::string copy = m_cypher_text;
     std::string::size_type found_pos = copy.find(sequence);
-    std::string::size_type first_pos = found_pos;
-    bool find_second = false;
+
     unsigned int count(0);
 
     while(found_pos != std::string::npos)
@@ -82,11 +81,6 @@ void Analysis::findOccurrence(std::string sequence)
         copy.erase(found_pos, sequence.size());
 
         found_pos = copy.find(sequence);
-        if(find_second == false)
-        {
-            occcurence_table[sequence].distance_between_occ = found_pos - first_pos + sequence.size();
-            find_second = true;
-        }
 
         count++;
     }
@@ -95,11 +89,43 @@ void Analysis::findOccurrence(std::string sequence)
 }
 
 /***********************************************************************************************************************************************************************/
+/************************************************************************* calculateDistance **************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::calculateDistance()
+{
+    
+    for(std::map<std::string, sequence_calculate>::iterator it = better_sequence.begin(); it != better_sequence.end(); ++it)
+    {
+        std::string copy = m_cypher_text;
+        std::string::size_type found_pos = copy.find(it->first);
+        std::string::size_type current_pos = found_pos;
+
+        while(found_pos != std::string::npos)
+        {
+            copy.erase(found_pos, it->first.size());
+
+            found_pos = copy.find(it->first);
+
+            if(found_pos != std::string::npos)
+            {
+                it->second.distances.push_back(found_pos- current_pos + it->first.size());
+                current_pos = found_pos;
+            }
+            
+        }
+        
+        
+    }
+}
+
+/***********************************************************************************************************************************************************************/
 /************************************************************************* calculateKeylength **************************************************************************/
 /***********************************************************************************************************************************************************************/
 void Analysis::calculateKeylength()
 {
     this->extractSequenceToAnalyse();
+    this->calculateDistance();
+    
 }
 
 /***********************************************************************************************************************************************************************/
@@ -112,7 +138,7 @@ void Analysis::extractSequenceToAnalyse()
     {
         if((it->second.occurences >= 2))
         {
-            better_sequence[it->first] = occcurence_table[it->first];
+            better_sequence[it->first] = it->second;   
         }
     }
 }

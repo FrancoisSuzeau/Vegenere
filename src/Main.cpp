@@ -178,8 +178,8 @@ int main(int argc, char **argv)
     //     makeItPrompt();
     // }
 
-    makeItGraphical();
-    // makeItPrompt();
+    // makeItGraphical();
+    makeItPrompt();
     
     return EXIT_SUCCESS;
 }
