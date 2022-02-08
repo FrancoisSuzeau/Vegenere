@@ -13,6 +13,7 @@
     #include <map>
     #include <vector>
     #include <algorithm>
+    #include <math.h>
 
     #define OCCURENCE 1
     #define SEQUENCE_A 2
@@ -35,10 +36,16 @@
             std::string m_cypher_text;
             std::map<std::string, sequence_calculate> occcurence_table;
             std::map<std::string, sequence_calculate> better_sequence;
+
+            std::map<int, int> divisor_frequency;
             
             void findOccurrence(std::string sequence);
             void calculateDistance();
             void extractSequenceToAnalyse();
+
+            void calculateDistantDivisorFrequency(int distance);
+
+            int findMaxFrequency();
 
 
         public:

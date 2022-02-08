@@ -108,7 +108,7 @@ void Analysis::calculateDistance()
 
             if(found_pos != std::string::npos)
             {
-                it->second.distances.push_back(found_pos- current_pos + it->first.size());
+                it->second.distances.push_back(found_pos - current_pos + it->first.size());
                 current_pos = found_pos;
             }
             
@@ -125,7 +125,61 @@ void Analysis::calculateKeylength()
 {
     this->extractSequenceToAnalyse();
     this->calculateDistance();
+
+    for(std::map<std::string, sequence_calculate>::iterator it = better_sequence.begin(); it != better_sequence.end(); ++it)
+    {
+        for(auto &tmp : it->second.distances)
+        {
+            this->calculateDistantDivisorFrequency(tmp);
+        }
+    }
+
+    int max = this->findMaxFrequency();
+    int key_length = 0;
+    for(std::map<int, int>::iterator it = divisor_frequency.begin(); it != divisor_frequency.end(); ++it)
+    {
+        if(it->second == max)
+        {
+            key_length = it->first;
+        }
+    }
+
+    std::cout << key_length << std::endl;
     
+}
+
+/***********************************************************************************************************************************************************************/
+/******************************************************************* findMaxFrequency **************************************************************************/
+/***********************************************************************************************************************************************************************/
+int Analysis::findMaxFrequency()
+{
+    int max = 0;
+
+    for(std::map<int, int>::iterator it = divisor_frequency.begin(); it != divisor_frequency.end(); ++it)
+    {
+        if(it->second > max)
+        {
+            max = it->second;
+        }
+    }
+
+    return max;
+}
+
+/***********************************************************************************************************************************************************************/
+/******************************************************************* calculateDistantDivisorFrequency **************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::calculateDistantDivisorFrequency(int distance)
+{
+    int R = (int) sqrt(distance);
+
+    for(int i(2); i <= R; i++)
+    {
+        if(distance % i == 0)
+        {
+            divisor_frequency[i]++;
+        }
+    }
 }
 
 /***********************************************************************************************************************************************************************/
