@@ -53,7 +53,10 @@ void Analysis::calculateOccurences()
             if(tmp[sequence].already_calculate == false)
             {
                 //calculate occurence count of the sequence
-                this->findOccurrence(sequence);
+                unsigned int count = this->findOccurrence(sequence);
+
+                //save it in this variable that we used later
+                occcurence_table[sequence].occurences = count;
 
                 //because the sequence will appeared an other time if is occurence il >= 2
                 // we don't have to calculate his occurence again so we set it a true
@@ -68,7 +71,7 @@ void Analysis::calculateOccurences()
 /***********************************************************************************************************************************************************************/
 /***************************************************************************** findOccurrence **************************************************************************/
 /***********************************************************************************************************************************************************************/
-void Analysis::findOccurrence(std::string sequence)
+unsigned int Analysis::findOccurrence(std::string sequence)
 {
 
     //a temporaly copy of the cypher text to calculate occurence count
@@ -94,12 +97,11 @@ void Analysis::findOccurrence(std::string sequence)
         count++;
     }
 
-    //save it in this variable that we used later
-    occcurence_table[sequence].occurences = count;
+    return count;
 }
 
 /***********************************************************************************************************************************************************************/
-/************************************************************************* calculateDistance **************************************************************************/
+/************************************************************************* calculateDistance ***************************************************************************/
 /***********************************************************************************************************************************************************************/
 void Analysis::calculateDistance()
 {
@@ -152,9 +154,11 @@ void Analysis::calculateKeylength()
     //So we browse the sequence map
     for(std::map<std::string, sequence_calculate>::iterator it = better_sequence.begin(); it != better_sequence.end(); ++it)
     {
+        // std::cout << it->first << std::endl;
         //and then we browse all the distances of a sequence
         for(auto &tmp : it->second.distances)
         {
+            // std::cout << tmp << std::endl;
             //and calculate the frequency of the divisor of the current distance (tmp)
             this->calculateDistantDivisorFrequency(tmp);
         }
@@ -163,25 +167,58 @@ void Analysis::calculateKeylength()
     //we now have a map with all divisor possible (no double) and his appearence count
     //we just have to find the max of appearance
     int max = this->findMaxFrequency();
-    int key_length = 0;
+    key_length = 0;
 
     //and then find the distance corresponding to this max
     //Reminder : in this map the first member of an iterator is the distance (the key) and the second member is
     //his the appearance count
     for(std::map<int, int>::iterator it = divisor_frequency.begin(); it != divisor_frequency.end(); ++it)
     {
+        // std::cout << "Divisor : " << it->first << " and his appearance count : " << it->second << std::endl;
         if(it->second == max)
         {
             key_length = it->first;
         }
     }
 
-    std::cout << key_length << std::endl;
+    // std::cout << "Divisor method : " << key_length << std::endl;
     
 }
 
 /***********************************************************************************************************************************************************************/
-/******************************************************************* findMaxFrequency **************************************************************************/
+/*************************************************************************** friedmanTest ******************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::friedmanTest()
+{
+    std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+    letter_occurence.clear();
+
+    for(int i = 0; i < (int) alphabet.size(); i++)
+    {
+        std::string letter = alphabet.substr(i, 1);
+        letter_occurence[letter] = this->findOccurrence(letter);
+    }
+
+    float K(0.0f);
+
+    for(std::map<std::string, int>::iterator it = letter_occurence.begin(); it != letter_occurence.end(); ++it)
+    {
+        K+= (float) ( letter_occurence[it->first] * (letter_occurence[it->first] - 1) );
+    }
+
+    K /=  (float) (m_cypher_text.size() * (m_cypher_text.size() - 1));
+
+    float Ke = 0.067f;
+    float Kr = (float) 1/26;
+    float Ltmp = (float) (Ke - Kr) / (float) (K - Kr);
+
+    int L = (int) Ltmp;
+    std::cout << "Friedman Test : " << L << std::endl;
+}
+
+/***********************************************************************************************************************************************************************/
+/*************************************************************************** findMaxFrequency **************************************************************************/
 /***********************************************************************************************************************************************************************/
 int Analysis::findMaxFrequency()
 {
@@ -199,10 +236,11 @@ int Analysis::findMaxFrequency()
 }
 
 /***********************************************************************************************************************************************************************/
-/******************************************************************* calculateDistantDivisorFrequency **************************************************************************/
+/******************************************************************* calculateDistantDivisorFrequency ******************************************************************/
 /***********************************************************************************************************************************************************************/
 void Analysis::calculateDistantDivisorFrequency(int distance)
 {
+    
     int R = (int) sqrt(distance);
 
     for(int potentialy_div(2); potentialy_div <= R; potentialy_div++)

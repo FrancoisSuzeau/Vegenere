@@ -21,7 +21,7 @@
     #include <SDL2/SDL_opengl.h>
     #endif
 
-    #include "../BabageKasiki/Analysis.hpp"
+    #include "../Analysis/Analysis.hpp"
     
 
     class Graphics {
