@@ -2,7 +2,7 @@
 
     Creation : 03/02/2022
 
-    Purpose : Module of Exercice 6, 7 and 8 (Babbage and Kasiki method) for Part Two
+    Purpose : Module of Exercice 6, 7, 8 (Babbage and Kasiki method), 11, 12 (Friedman Test) and 14 (frequency analysis for Part Two
 */
 
 #ifndef ANALYSIS_H
@@ -17,6 +17,12 @@
 
     #define OCCURENCE 1
     #define SEQUENCE_A 2
+
+    #define DIVISOR_KEY 3
+    #define FRIEDMAN_KEY 4
+
+    #define FRENCH 5
+    #define ENGLISH 6
 
     typedef struct sequence_calculate {
 
@@ -34,9 +40,13 @@
 
             std::string m_cypher_text;
             int key_length;
+            int L;
             std::map<std::string, sequence_calculate> occcurence_table;
             std::map<std::string, sequence_calculate> better_sequence;
             std::map<std::string, int> letter_occurence;
+
+            std::vector<float> frequency_appearance_french;
+            std::vector<float> frequency_appearance_english;
 
             std::map<int, int> divisor_frequency;
             
@@ -48,6 +58,10 @@
 
             int findMaxFrequency();
 
+            void displayGeneralLanguageLetterFrequency();
+
+            void showFrequnecyAnalysisSept(std::map<std::string, float> frequency_in_cypher);
+
 
         public:
 
@@ -58,9 +72,14 @@
             void calculateOccurences();
             void calculateKeylength();
             void friedmanTest();
+            void frequencyAnalysis(int key_l);
 
             std::map<std::string, sequence_calculate> getCalculationTable(int type) const;
             void setCypherText(std::string const text);
+
+            int getKeyLenght(int choice) const;
+
+
     };
 
 #endif

@@ -12,7 +12,17 @@
 /***********************************************************************************************************************************************************************/
 Analysis::Analysis(std::string cyper_text) : m_cypher_text(cyper_text)
 {
+                                // A     B      C       D   E       F   G       H   I       J   K       L
+    frequency_appearance_french = {9.42, 1.02, 2.64, 3.39, 15.87, 0.95, 1.04, 0.77, 8.41, 0.89, 0.0, 5.34,
+    
+//  M       N   O       P   Q       R   S       T   U       V   W   X       Y   Z
+    3.24, 7.15, 5.14, 2.86, 1.06, 6.46, 7.9, 7.26, 6.24, 2.15, 0.0, 0.3, 0.24, 0.32};
 
+                                //   A      B   C       D   E       F      G    H   I       J   K       L
+    frequency_appearance_english = {8.08, 1.67, 3.18, 3.99, 12.56, 2.17, 1.8, 5.27, 7.24, 0.14, 0.63, 4.04,
+
+//  M       N   O       P   Q       R   S       T   U     V     W   X       Y   Z
+    2.6, 7.38, 7.47, 1.91, 0.09, 6.42, 6.59, 9.15, 2.79, 1.0, 1.89, 0.21, 1.65, 0.07};
 }
 
 Analysis::Analysis() : m_cypher_text("none")
@@ -213,8 +223,50 @@ void Analysis::friedmanTest()
     float Kr = (float) 1/26;
     float Ltmp = (float) (Ke - Kr) / (float) (K - Kr);
 
-    int L = (int) Ltmp;
+    L = (int) Ltmp;
     std::cout << "Friedman Test : " << L << std::endl;
+}
+
+/***********************************************************************************************************************************************************************/
+/********************************************************************** frequencyAnalysis ******************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::frequencyAnalysis(int key_l)
+{
+    //since we already calculate the occurence of all letter in the Friedman test
+    //I re used them
+
+    std::map<std::string, float> frequency_in_cypher;
+    std::cout << "There is the frequency of each letter in the encrypted text : " << std::endl;
+
+    std::string msg;
+
+    while(msg != "1")
+    {
+        for(std::map<std::string, int>::iterator it = letter_occurence.begin(); it != letter_occurence.end(); ++it)
+        {
+            frequency_in_cypher[it->first] = (float) (it->second * 100) / (float) m_cypher_text.size();
+        }
+
+        this->showFrequnecyAnalysisSept(frequency_in_cypher);
+
+
+        std::cout << "Make a choice : " << std::endl;
+        std::cin >> msg;
+    }
+}
+
+/***********************************************************************************************************************************************************************/
+/********************************************************************** showFrequnecyAnalysisSept **********************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::showFrequnecyAnalysisSept(std::map<std::string, float> frequency_in_cypher)
+{
+
+    for(std::map<std::string, float>::iterator it = frequency_in_cypher.begin(); it != frequency_in_cypher.end(); ++it)
+    {
+        std::cout << it->first << " : " << it->second << " %" << std::endl;
+    }
+
+    this->displayGeneralLanguageLetterFrequency();
 }
 
 /***********************************************************************************************************************************************************************/
@@ -283,19 +335,73 @@ void Analysis::extractSequenceToAnalyse()
 /***********************************************************************************************************************************************************************/
 std::map<std::string, sequence_calculate> Analysis::getCalculationTable(int type) const
 {
+    std::map<std::string, sequence_calculate> ret;
     switch (type)
     {
         case OCCURENCE:
-            return occcurence_table;
+            ret = occcurence_table;
+            break;
         case SEQUENCE_A:
-            return better_sequence;
+            ret = better_sequence;
+            break;
         default:
             break;
     }
+
+    return ret;
 }
 
 void Analysis::setCypherText(std::string const text)
 {
     m_cypher_text.clear();
     m_cypher_text = text;
+}
+
+int Analysis::getKeyLenght(int choice) const
+{
+    int ret(0);
+    switch (choice)
+    {
+        case DIVISOR_KEY:
+            ret = key_length;
+            break;
+        case FRIEDMAN_KEY:
+            ret = L;
+            break;
+        default:
+            break;
+    }
+
+    return ret;
+}
+
+void Analysis::displayGeneralLanguageLetterFrequency()
+{
+    std::cout << "Here, the frequency appearance of each letter in FRENCH : " << std::endl;
+    std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+    int i(0);
+    for(std::vector<float>::iterator it = frequency_appearance_french.begin(); it != frequency_appearance_french.end(); ++it)
+    {
+        std::string letter = alphabet.substr(i, 1);
+        std::cout << "[" << letter << " : " << it[0] << "%] ";
+
+        i++;
+    }
+
+    std::cout << std::endl;
+
+    i = 0;
+
+    std::cout << "Now, the frequency appearance of each letter in ENGLISH : " << std::endl;
+    for(std::vector<float>::iterator it = frequency_appearance_english.begin(); it != frequency_appearance_english.end(); ++it)
+    {
+        std::string letter = alphabet.substr(i, 1);
+        std::cout << "[" << letter << " : " << it[0] << "%] ";
+
+        i++;
+    }
+
+    std::cout << std::endl;
+
 }

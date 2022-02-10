@@ -15,18 +15,18 @@ void makeItPrompt()
     // //Capture the text
     // _input_text.captureInput(">>> ENTER YOUR TEXT : ");
 
-    _input_text.setInput("During this last day, however, little by little the gangways were cleared, the scaffoldings were taken down, the fly-wheel cranes disappeared, the fixing of the engines was accomplished, the last screws and nails were driven in, the reservoirs filled with oil, and the last slab rested on its metal mortise. This day the chief engineer tried the boilers.");
-    _input_text.transformInput();
-    std::cout <<"Your initial message after transformation is : " << _input_text.getInput(true) << std::endl;
+    // _input_text.setInput("During this last day, however, little by little the gangways were cleared, the scaffoldings were taken down, the fly-wheel cranes disappeared, the fixing of the engines was accomplished, the last screws and nails were driven in, the reservoirs filled with oil, and the last slab rested on its metal mortise. This day the chief engineer tried the boilers.");
+    // _input_text.transformInput();
+    // std::cout <<"Your initial message after transformation is : " << _input_text.getInput(true) << std::endl;
 
-    // //Catpure the key
-    _input_key.captureInput(">>> ENTER YOUR KEY : ");
-    _input_key.transformInput();
-    std::cout <<"Your key after transformation is : " << _input_key.getInput(true) << std::endl;
+    // // //Catpure the key
+    // _input_key.captureInput(">>> ENTER YOUR KEY : ");
+    // _input_key.transformInput();
+    // std::cout <<"Your key after transformation is : " << _input_key.getInput(true) << std::endl;
 
-    // //Encrypt text
-    _encryption.VigenereEncryption(_input_text.getInput(true), _input_key.getInput(true));
-    std::cout << "Your message encrypted is : " << _encryption.getEncrypted() << std::endl;
+    // // //Encrypt text
+    // _encryption.VigenereEncryption(_input_text.getInput(true), _input_key.getInput(true));
+    // std::cout << "Your message encrypted is : " << _encryption.getEncrypted() << std::endl;
 
     // //Decrypt text
     // _encryption.VigenereDecryption(_input_key.getInput(true));
@@ -34,15 +34,18 @@ void makeItPrompt()
 
     // // Analysis _analysis(_encryption.getEncrypted());
     // Analysis _analysis("abcdefghijklmnopqrstuvwxyzabcdmnoabc");
+    Analysis _analysis("segelazewaopqjlnkfapzajyuyhklazeacnwpqepaaynepaykklanwperaiajp");
     // Analysis _analysis("duringthislastdayhoweverlittlebylittlethegangwayswereclearedthescaffoldingsweretakendowntheflywheelcranesdisappearedthefixingoftheengineswasaccomplishedthelastscrewsandnailsweredriveninthereservoirsfilledwithoilandthelastslabrestedonitsmetalmortisethisdaythechiefengineertriedtheboilers");
 
-    Analysis _analysis(_encryption.getEncrypted());
+    // Analysis _analysis(_encryption.getEncrypted());
 
     // Calculate all occurences by sequences of 3 or more letters
     _analysis.calculateOccurences();
     _analysis.calculateKeylength();
 
     _analysis.friedmanTest();
+
+    _analysis.frequencyAnalysis(0);
 }
 
 void makeItGraphical()
