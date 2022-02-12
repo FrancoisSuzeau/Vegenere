@@ -52,16 +52,8 @@ int main(int argc, char **argv)
     std::cout << "Choose your key length :\n1 - Key divisor method\n2 - Key Friedman test" << std::endl;
     std::cin >> choice;
 
-    int key_length(0);
-
-    if(choice == "1")
-    {
-        key_length = _analysis.getKeyLenght(DIVISOR_KEY);
-    }
-    else
-    {
-        key_length = _analysis.getKeyLenght(FRIEDMAN_KEY);
-    }
+    int which_lenght = (choice == "1") ? DIVISOR_KEY : FRIEDMAN_KEY;
+    int key_length = _analysis.getKeyLenght(which_lenght);
 
     std::string key = _analysis.frequencyAnalysis(key_length);
 
