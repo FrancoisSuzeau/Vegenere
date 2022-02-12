@@ -320,10 +320,72 @@ void Analysis::extractSequenceToAnalyse()
 /***********************************************************************************************************************************************************************/
 /********************************************************************** frequencyAnalysis ******************************************************************************/
 /***********************************************************************************************************************************************************************/
-void Analysis::frequencyAnalysis(int key_l)
+std::string Analysis::frequencyAnalysis(int key_l)
 {
+    std::string key;
+    std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
+    int nb_letter_in_key_found(0);
+
+    std::string choice;
+    std::cout << "Choose a language you want for analysis (default french) :\n1 - French\n2 - English" << std::endl;
+    std::cin >> choice;
+
+    std::cout << std::endl;
+
     std::cout << "The encrypted text cut by the key length : " << std::endl;
     this->displaySeparateCypher(key_l);
+
+    std::cout << std::endl;
+
+    while(nb_letter_in_key_found < key_l)
+    {
+        std::cout << "There is the first letter of each sub sequence : " << std::endl;
+        std::cout << std::endl;
+        std::vector<std::string> lettersAtPos;
+        this->takeLetterAtPos(key_l, nb_letter_in_key_found, lettersAtPos);
+        for(std::vector<std::string>::iterator it = lettersAtPos.begin(); it != lettersAtPos.end(); ++it)
+        {
+            std::cout << it[0];
+        }
+        std::cout << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "There is the frequency appearance of this letter : " << std::endl;
+        this->calculateFrequencyLetterSubstr(lettersAtPos);
+
+        std::cout << std::endl;
+        std::string language = (choice == "1") ? "French :" : "English :";
+        std::cout << "And now the frequency appareance in " << language << std::endl;
+        this->displayLetterFrequencyLangage(choice, alphabet);
+
+        std::string choice_a, choice_b;
+        std::cout << "Choose the letter in sub sequence :" << std::endl;
+        std::cin >> choice_a;
+        std::cout << std::endl;
+        std::cout << "Choose the letter in language frequency appearance :" << std::endl;
+        std::cin >> choice_b;
+
+        int index = this->calculateDistBetweenLetter(choice_a, choice_b);
+
+        // this->clean(choice_b, alphabet);
+        // std::cout << alphabet.at(index) << std::endl;
+
+        key.append(alphabet.substr(index, 1));
+
+        nb_letter_in_key_found++;
+
+        if(nb_letter_in_key_found < key_l)
+        {
+            std::cout << "For now here is the key : " << key << std::endl;
+        }
+        
+
+    }
+
+    std::cout << "Here is the key you found : " << key << std::endl;
+
+    return key;
+    
 }
 
 /***********************************************************************************************************************************************************************/
@@ -331,11 +393,11 @@ void Analysis::frequencyAnalysis(int key_l)
 /***********************************************************************************************************************************************************************/
 void Analysis::displaySeparateCypher(int key_l)
 {
-    int i(0);
-    for(std::vector<std::string>::iterator it = decrypted_cypher.begin(); it != decrypted_cypher.end(); ++it)
+    int i(1);
+    for(std::string::iterator it = m_cypher_text.begin(); it != m_cypher_text.end(); ++it)
     {
         std::cout << it[0];
-        if((i > 0) && (i % key_l == 0))
+        if(i % key_l == 0)
         {
             std::cout << " ";
         }
@@ -343,6 +405,115 @@ void Analysis::displaySeparateCypher(int key_l)
     }
 
     std::cout << std::endl;
+}
+
+/***********************************************************************************************************************************************************************/
+/*********************************************************** displayLetterFrequencyLangage *****************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::displayLetterFrequencyLangage(std::string choice, std::string alphabet)
+{
+    std::vector<float> tmp = frequency_appearance_french;
+    if(choice == "2")
+    {
+        tmp = frequency_appearance_english;
+    }
+    
+    int i(0);
+    for(std::string::iterator it = alphabet.begin(); it != alphabet.end(); ++it)
+    {
+        std::cout << "[ " <<  it[0] << " : " << tmp[i] << "] ";
+        i++;
+    }
+
+    std::cout << std::endl;
+}
+
+/***********************************************************************************************************************************************************************/
+/********************************************************** calculateFrequencyLetterSubstr *****************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::calculateFrequencyLetterSubstr(std::vector<std::string> tmp)
+{
+    std::map<std::string, int> occ;
+    for(std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it)
+    {
+        occ[it[0]]++;
+    }
+
+    for(std::map<std::string, int>::iterator it = occ.begin(); it != occ.end(); ++it)
+    {
+        letter_frequency[it->first] = (float) it->second * 100 / tmp.size();
+        std::cout << "[ " <<  it->first << " : " << letter_frequency[it->first] << "] ";
+    }
+
+}
+
+/***********************************************************************************************************************************************************************/
+/************************************************************************* takeLetterAtPos *****************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::takeLetterAtPos(int key_l, int offset, std::vector<std::string> &tmp)
+{
+    tmp.clear();
+    for(int i(0); i < (int) m_cypher_text.size(); i++)
+    {
+        if((i % key_l == 0) && (i + offset < (int) m_cypher_text.size()))
+        {
+            tmp.push_back(m_cypher_text.substr(i + offset, 1));
+        }
+    }
+}
+
+/***********************************************************************************************************************************************************************/
+/************************************************************** calculateDistBetweenLetter *****************************************************************************/
+/***********************************************************************************************************************************************************************/
+int Analysis::calculateDistBetweenLetter(std::string a, std::string b)
+{
+    int index_a, index_b;
+    std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for(int i(0); i < (int) alphabet.size(); i++)
+    {
+        if(a == alphabet.substr(i, 1))
+        {
+            index_a = i;
+        }
+
+        if(b == alphabet.substr(i, 1))
+        {
+            index_b = i;
+        }
+    }
+
+    int dist;
+    if(index_b > index_a)
+    {
+        dist = 26 - (index_b - index_a);
+    }
+    else
+    {
+        dist = (index_a - index_b) % 26;
+    }
+    // std::cout << dist << std::endl;
+    return dist;
+}
+
+/***********************************************************************************************************************************************************************/
+/****************************************************************************** clean **********************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::clean(std::string b, std::string &alphabet)
+{
+    int index(0);
+    for(std::string::iterator it = alphabet.begin(); it != alphabet.end(); ++it)
+    {
+        if(b == alphabet.substr(index, 1))
+        {
+            frequency_appearance_english.erase(frequency_appearance_english.begin()+index);
+            frequency_appearance_french.erase(frequency_appearance_french.begin()+index);
+            break;
+        }
+
+        index++;
+    }
+
+    alphabet.erase(index, 1);
 }
 
 /***********************************************************************************************************************************************************************/

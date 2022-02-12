@@ -45,6 +45,7 @@
             std::map<std::string, sequence_calculate> occcurence_table;
             std::map<std::string, sequence_calculate> better_sequence;
             std::map<std::string, int> letter_occurence;
+            std::map<std::string, float> letter_frequency;
 
             std::vector<float> frequency_appearance_french;
             std::vector<float> frequency_appearance_english;
@@ -60,6 +61,13 @@
             int findMaxFrequency();
 
             void displaySeparateCypher(int key_l);
+            void displayLetterFrequencyLangage(std::string choice, std::string alphabet);
+
+            void calculateFrequencyLetterSubstr(std::vector<std::string> tmp);
+            void takeLetterAtPos(int key_l, int offset, std::vector<std::string> &tmp);
+            int calculateDistBetweenLetter(std::string a, std::string b);
+            void clean(std::string b, std::string &alphabet);
+
 
             
 
@@ -75,7 +83,7 @@
             void calculateOccurences();
             void calculateKeylength();
             void friedmanTest();
-            void frequencyAnalysis(int key_l);
+            std::string frequencyAnalysis(int key_l);
 
             std::map<std::string, sequence_calculate> getCalculationTable(int type) const;
             void setCypherText(std::string const text);
