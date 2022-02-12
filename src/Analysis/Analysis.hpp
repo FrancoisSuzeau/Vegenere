@@ -14,6 +14,7 @@
     #include <vector>
     #include <algorithm>
     #include <math.h>
+    #include <cassert>
 
     #define OCCURENCE 1
     #define SEQUENCE_A 2
@@ -58,9 +59,15 @@
 
             int findMaxFrequency();
 
-            void displayGeneralLanguageLetterFrequency();
+            void displayGeneralLanguageLetterFrequency(std::string alphabet);
 
-            void showFrequnecyAnalysisSept(std::map<std::string, float> frequency_in_cypher);
+            void showFrequnecyAnalysisSept(std::map<std::string, float> frequency_in_cypher, std::string alphabet);
+
+            void replaceAndShowResult(std::string re, std::string re_by);
+
+            void clean(std::string replaced, std::string replaced_by, std::string &alphabet, std::map<std::string, float> &frequency_in_cypher);
+
+            std::string *decrypted_cypher;
 
 
         public:
