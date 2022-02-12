@@ -24,14 +24,11 @@ Analysis::Analysis(std::string cyper_text) : m_cypher_text(cyper_text)
 //  M       N   O       P   Q       R   S       T   U     V     W   X       Y   Z
     2.6, 7.38, 7.47, 1.91, 0.09, 6.42, 6.59, 9.15, 2.79, 1.0, 1.89, 0.21, 1.65, 0.07};
 
-    decrypted_cypher = new std::string[m_cypher_text.size()];
-    assert(decrypted_cypher);
-
     int i(0);
     for(std::string::iterator it = m_cypher_text.begin(); it != m_cypher_text.end(); ++it)
     {
         std::string l = m_cypher_text.substr(i, 1);
-        decrypted_cypher[i] = l;
+        decrypted_cypher.push_back(l);
         i++;
     }
 }
@@ -43,10 +40,7 @@ Analysis::Analysis() : m_cypher_text("none")
 
 Analysis::~Analysis()
 {
-    if(decrypted_cypher != nullptr)
-    {
-        delete decrypted_cypher;
-    }
+
 }
 
 /***********************************************************************************************************************************************************************/
@@ -192,6 +186,7 @@ void Analysis::calculateKeylength()
     //we just have to find the max of appearance
     int max = this->findMaxFrequency();
     key_length = 0;
+    
 
     //and then find the distance corresponding to this max
     //Reminder : in this map the first member of an iterator is the distance (the key) and the second member is
@@ -205,7 +200,27 @@ void Analysis::calculateKeylength()
         }
     }
 
-    // std::cout << "Divisor method : " << key_length << std::endl;
+    if(key_length % 2 == 0)
+    {
+        for(std::map<int, int>::iterator it = divisor_frequency.begin(); it != divisor_frequency.end(); ++it)
+        {
+            std::cout << it->first << " : " << it->second << std::endl;
+        }
+        std::string choice;
+        std::cout << "The most common divisor is pair so you can choose a more probalble key length (see above)." << std::endl;
+        std::cin >> choice;
+        try
+        {
+            key_length = stoi(choice);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "Error  : " << e.what() << '\n';
+        }
+        
+    }
+
+    std::cout << "Divisor method find : " << key_length << " as key length" << std::endl;
     
 }
 
@@ -238,96 +253,7 @@ void Analysis::friedmanTest()
     float Ltmp = (float) (Ke - Kr) / (float) (K - Kr);
 
     L = (int) Ltmp;
-    // std::cout << "Friedman Test : " << L << std::endl;
-}
-
-/***********************************************************************************************************************************************************************/
-/********************************************************************** frequencyAnalysis ******************************************************************************/
-/***********************************************************************************************************************************************************************/
-void Analysis::frequencyAnalysis(int key_l)
-{
-    //since we already calculate the occurence of all letter in the Friedman test
-    //I re used them
-    std::map<std::string, float> frequency_in_cypher;
-    for(std::map<std::string, int>::iterator it = letter_occurence.begin(); it != letter_occurence.end(); ++it)
-    {
-        frequency_in_cypher[it->first] = (float) (it->second * 100) / (float) m_cypher_text.size();
-    }
-
-    std::string replace;
-    std::string replace_by;
-    std::string tmp = "abcdefghijkelmnopqurstuvwxyz";
-    std::string tmp1 = "abcdefghijkelmnopqurstuvwxyz";
-
-    while((replace != "1") && (replace_by != "1"))
-    {
-        std::cout << "There is the frequency of each letter in the encrypted text : " << std::endl;
-        this->showFrequnecyAnalysisSept(frequency_in_cypher, tmp);
-
-        std::cout << ">>>>>>>>> Choose a letter to replace : (Enter 1 to stop)" << std::endl;
-        std::cin >> replace;
-        std::cout << std::endl;
-
-        if((replace.size() == 1) && (tmp.find(replace) != std::string::npos))
-        {
-            std::cout << ">>>>>>>>> Choose by which letter you want to replace : (Enter 1 to stop)" << std::endl;
-            std::cin >> replace_by;
-            std::cout << std::endl;
-
-            if((replace_by.size() == 1) && (tmp1.find(replace_by) != std::string::npos))
-            {
-                this->replaceAndShowResult(replace, replace_by);
-                this->clean(replace, replace_by, tmp1, frequency_in_cypher);
-                std::string::size_type pos = tmp.find(replace);
-                tmp.erase(pos, 1);
-            }
-        }
-    }
-}
-
-/***********************************************************************************************************************************************************************/
-/********************************************************************** replaceAndShowResult **********************************************************************/
-/***********************************************************************************************************************************************************************/
-void Analysis::replaceAndShowResult(std::string re, std::string re_by)
-{
-    
-    for(int pos(0); pos < (int) m_cypher_text.size(); pos++)
-    {
-        std::string letter = m_cypher_text.substr(pos, 1);
-        if(letter == re)
-        {
-            decrypted_cypher[pos] = re_by;
-        }
-    }
-
-    for(int i(0); i < (int) m_cypher_text.size(); i++)
-    {
-        std::cout << decrypted_cypher[i];
-        if((i % 4 == 0) && (i > 1))
-        {
-            std::cout << " ";
-        }
-    }
-
-    std::cout << std::endl;
-    std::cout << std::endl;
-}
-
-/***********************************************************************************************************************************************************************/
-/********************************************************************** showFrequnecyAnalysisSept **********************************************************************/
-/***********************************************************************************************************************************************************************/
-void Analysis::showFrequnecyAnalysisSept(std::map<std::string, float> frequency_in_cypher, std::string alphabet)
-{
-
-    for(std::map<std::string, float>::iterator it = frequency_in_cypher.begin(); it != frequency_in_cypher.end(); ++it)
-    {
-        std::cout << "[" << it->first << " : " << it->second << "] ";
-    }
-
-    std::cout << std::endl;
-    std::cout << std::endl;
-
-    this->displayGeneralLanguageLetterFrequency(alphabet);
+    std::cout << "Friedman Test find : " << L << " as key length" << std::endl;
 }
 
 /***********************************************************************************************************************************************************************/
@@ -392,6 +318,34 @@ void Analysis::extractSequenceToAnalyse()
 }
 
 /***********************************************************************************************************************************************************************/
+/********************************************************************** frequencyAnalysis ******************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::frequencyAnalysis(int key_l)
+{
+    std::cout << "The encrypted text cut by the key length : " << std::endl;
+    this->displaySeparateCypher(key_l);
+}
+
+/***********************************************************************************************************************************************************************/
+/******************************************************************* displaySeparateCypher *****************************************************************************/
+/***********************************************************************************************************************************************************************/
+void Analysis::displaySeparateCypher(int key_l)
+{
+    int i(0);
+    for(std::vector<std::string>::iterator it = decrypted_cypher.begin(); it != decrypted_cypher.end(); ++it)
+    {
+        std::cout << it[0];
+        if((i > 0) && (i % key_l == 0))
+        {
+            std::cout << " ";
+        }
+        i++;
+    }
+
+    std::cout << std::endl;
+}
+
+/***********************************************************************************************************************************************************************/
 /************************************************************************* getters/setters *****************************************************************************/
 /***********************************************************************************************************************************************************************/
 std::map<std::string, sequence_calculate> Analysis::getCalculationTable(int type) const
@@ -434,69 +388,4 @@ int Analysis::getKeyLenght(int choice) const
     }
 
     return ret;
-}
-
-void Analysis::displayGeneralLanguageLetterFrequency(std::string alphabet)
-{
-    std::cout << "Here, the frequency appearance of each letter in FRENCH : " << std::endl;
-    // std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
-
-    int i(0);
-    for(std::vector<float>::iterator it = frequency_appearance_french.begin(); it != frequency_appearance_french.end(); ++it)
-    {
-        std::string letter = alphabet.substr(i, 1);
-        std::cout << "[" << letter << " : " << it[0] << "%] ";
-
-        i++;
-    }
-
-    std::cout << std::endl;
-    std::cout << std::endl;
-
-    i = 0;
-
-    std::cout << "Now, the frequency appearance of each letter in ENGLISH : " << std::endl;
-    for(std::vector<float>::iterator it = frequency_appearance_english.begin(); it != frequency_appearance_english.end(); ++it)
-    {
-        std::string letter = alphabet.substr(i, 1);
-        std::cout << "[" << letter << " : " << it[0] << "%] ";
-
-        i++;
-    }
-
-    std::cout << std::endl;
-    std::cout << std::endl;
-
-}
-
-void Analysis::clean(std::string replaced, std::string replaced_by, std::string &alphabet, std::map<std::string, float> &frequency_in_cypher)
-{
-    int i(0);
-    for(std::string::iterator it = alphabet.begin(); it != alphabet.end(); ++it)
-    {
-        if(it[0] == replaced_by.at(0))
-        {
-            break;
-        }
-
-        i++;
-    }
-
-    frequency_appearance_french.erase(frequency_appearance_french.begin()+i);
-    frequency_appearance_english.erase(frequency_appearance_english.begin()+i);
-    
-    alphabet.erase(i, 1);
-
-    for(auto it = frequency_in_cypher.begin(); it != frequency_in_cypher.end();)
-    {
-        if(it->first == replaced)
-        {
-            it = frequency_in_cypher.erase(it);
-            break;
-        }
-        else
-        {
-            ++it;
-        }
-    }
 }

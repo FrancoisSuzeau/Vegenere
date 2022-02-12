@@ -59,15 +59,11 @@
 
             int findMaxFrequency();
 
-            void displayGeneralLanguageLetterFrequency(std::string alphabet);
+            void displaySeparateCypher(int key_l);
 
-            void showFrequnecyAnalysisSept(std::map<std::string, float> frequency_in_cypher, std::string alphabet);
+            
 
-            void replaceAndShowResult(std::string re, std::string re_by);
-
-            void clean(std::string replaced, std::string replaced_by, std::string &alphabet, std::map<std::string, float> &frequency_in_cypher);
-
-            std::string *decrypted_cypher;
+            std::vector<std::string> decrypted_cypher;
 
 
         public:
