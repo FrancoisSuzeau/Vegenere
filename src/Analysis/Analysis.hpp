@@ -66,7 +66,8 @@
             void calculateFrequencyLetterSubstr(std::vector<std::string> tmp);
             void takeLetterAtPos(int key_l, int offset, std::vector<std::string> &tmp);
             int calculateDistBetweenLetter(std::string a, std::string b);
-            void clean(std::string b, std::string &alphabet);
+
+            // void clean(std::string b, std::string &alphabet);
 
 
             

@@ -193,24 +193,30 @@ void Analysis::calculateKeylength()
     //his the appearance count
     for(std::map<int, int>::iterator it = divisor_frequency.begin(); it != divisor_frequency.end(); ++it)
     {
-        // std::cout << "Divisor : " << it->first << " and his appearance count : " << it->second << std::endl;
         if(it->second == max)
         {
             key_length = it->first;
         }
     }
 
+    //When the most common divisor is pair, the program find 2 as the most common divisor whereas it could be 4 or 6
+    //so we let the user decide with statistics
     if(key_length % 2 == 0)
     {
+        //browse the divisor occurence map
         for(std::map<int, int>::iterator it = divisor_frequency.begin(); it != divisor_frequency.end(); ++it)
         {
             std::cout << it->first << " : " << it->second << std::endl;
         }
+
+        //capture the choice of the user
         std::string choice;
         std::cout << "The most common divisor is pair so you can choose a more probalble key length (see above)." << std::endl;
         std::cin >> choice;
+
         try
         {
+            //convert it to int
             key_length = stoi(choice);
         }
         catch(const std::exception& e)
@@ -229,29 +235,36 @@ void Analysis::calculateKeylength()
 /***********************************************************************************************************************************************************************/
 void Analysis::friedmanTest()
 {
+    //we need a string containing all the letter in the alphabet to calculate the occurence in the cypher text
     std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
     letter_occurence.clear();
 
     for(int i = 0; i < (int) alphabet.size(); i++)
     {
+        //at each iteration we recover a letter in the alphabet
         std::string letter = alphabet.substr(i, 1);
+        //and then calculate his occurence count in the cypher text that we add in our map
         letter_occurence[letter] = this->findOccurrence(letter);
     }
 
     float K(0.0f);
 
+    //here we calculate the top part of the formula : (ke - kr) / (k - kr)
+    //with ke the probability to find two same letter in a english text
     for(std::map<std::string, int>::iterator it = letter_occurence.begin(); it != letter_occurence.end(); ++it)
     {
         K+= (float) ( letter_occurence[it->first] * (letter_occurence[it->first] - 1) );
     }
 
+    //the bottom part of the formula
     K /=  (float) (m_cypher_text.size() * (m_cypher_text.size() - 1));
 
     float Ke = 0.067f;
     float Kr = (float) 1/26;
     float Ltmp = (float) (Ke - Kr) / (float) (K - Kr);
 
+    //convert the result to the lower rounding as key lenght
     L = (int) Ltmp;
     std::cout << "Friedman Test find : " << L << " as key length" << std::endl;
 }
@@ -322,24 +335,33 @@ void Analysis::extractSequenceToAnalyse()
 /***********************************************************************************************************************************************************************/
 std::string Analysis::frequencyAnalysis(int key_l)
 {
+    //a string that is fill with a letter at each iteration
     std::string key;
+    //this string will serve to calculate the frequency of all letter in the substring
     std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+    //this will serve the stop condition of our while loop
     int nb_letter_in_key_found(0);
 
+    //here we want to let the choice of which language the user suspect how the original text is written
     std::string choice;
     std::cout << "Choose a language you want for analysis (default french) :\n1 - French\n2 - English" << std::endl;
     std::cin >> choice;
 
     std::cout << std::endl;
 
+    //we display the cypher text by key length sequences
     std::cout << "The encrypted text cut by the key length : " << std::endl;
     this->displaySeparateCypher(key_l);
 
     std::cout << std::endl;
 
+    //we stop the analysis when we reach the key size even if it is not the key
     while(nb_letter_in_key_found < key_l)
     {
-        std::cout << "There is the first letter of each sub sequence : " << std::endl;
+
+        //there we display the letter at i position in the key length sequences of the cypher text after we recover them in the vector lettersAtPos
+        std::cout << "There is the " << nb_letter_in_key_found + 1 << " letter of each sub sequence : " << std::endl;
         std::cout << std::endl;
         std::vector<std::string> lettersAtPos;
         this->takeLetterAtPos(key_l, nb_letter_in_key_found, lettersAtPos);
@@ -350,32 +372,41 @@ std::string Analysis::frequencyAnalysis(int key_l)
         std::cout << std::endl;
         std::cout << std::endl;
 
+        //then we calculate the frequency appearence of each letter at the i position
         std::cout << "There is the frequency appearance of this letter : " << std::endl;
         this->calculateFrequencyLetterSubstr(lettersAtPos);
 
+        //then we show the frequency appearence in a english or french text (choose by user)
         std::cout << std::endl;
         std::string language = (choice == "1") ? "French :" : "English :";
         std::cout << "And now the frequency appareance in " << language << std::endl;
         this->displayLetterFrequencyLangage(choice, alphabet);
 
+        //then we let the user choose which letter he want to replace
         std::string choice_a, choice_b;
         std::cout << "Choose the letter in sub sequence :" << std::endl;
         std::cin >> choice_a;
+
         std::cout << std::endl;
+
+        //here we let the user to choose which letter the previously letter was encrypted
         std::cout << "Choose the letter in language frequency appearance :" << std::endl;
         std::cin >> choice_b;
 
+        //then we calculate and find the position in alphabet of the letter of the key responsible of the encrypted letter choose by user
         int index = this->calculateDistBetweenLetter(choice_a, choice_b);
 
         // this->clean(choice_b, alphabet);
         // std::cout << alphabet.at(index) << std::endl;
 
+        //and we add the letter at the previously calculate position in the key string
         key.append(alphabet.substr(index, 1));
 
         nb_letter_in_key_found++;
 
         if(nb_letter_in_key_found < key_l)
         {
+            //just a previsualization of the key at each iteration
             std::cout << "For now here is the key : " << key << std::endl;
         }
         
@@ -394,9 +425,13 @@ std::string Analysis::frequencyAnalysis(int key_l)
 void Analysis::displaySeparateCypher(int key_l)
 {
     int i(1);
+    //just a print function where we display all the letter of the cypher text by key length sequences  
     for(std::string::iterator it = m_cypher_text.begin(); it != m_cypher_text.end(); ++it)
     {
         std::cout << it[0];
+
+        //and if the position of the next letter in the cypher text is divisible by the key length then we add a space
+        //because we start the loop at 1 we prevent to not calculate for one as a divisor of key length
         if(i % key_l == 0)
         {
             std::cout << " ";
@@ -412,6 +447,7 @@ void Analysis::displaySeparateCypher(int key_l)
 /***********************************************************************************************************************************************************************/
 void Analysis::displayLetterFrequencyLangage(std::string choice, std::string alphabet)
 {
+    //in this function we display the frequency appearance of all letter in an english or french text (according to the choice of the user)
     std::vector<float> tmp = frequency_appearance_french;
     if(choice == "2")
     {
@@ -433,12 +469,16 @@ void Analysis::displayLetterFrequencyLangage(std::string choice, std::string alp
 /***********************************************************************************************************************************************************************/
 void Analysis::calculateFrequencyLetterSubstr(std::vector<std::string> tmp)
 {
+    //In this function we calculate the frequency appearance of each letter at a certain position in sequences of size of the key
+
+    //first we calculate their occurence
     std::map<std::string, int> occ;
     for(std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
         occ[it[0]]++;
     }
 
+    //then we transform it in frequency and displaying it
     for(std::map<std::string, int>::iterator it = occ.begin(); it != occ.end(); ++it)
     {
         letter_frequency[it->first] = (float) it->second * 100 / tmp.size();
@@ -452,6 +492,11 @@ void Analysis::calculateFrequencyLetterSubstr(std::vector<std::string> tmp)
 /***********************************************************************************************************************************************************************/
 void Analysis::takeLetterAtPos(int key_l, int offset, std::vector<std::string> &tmp)
 {
+    //in this function we recover all letter at a certain position in sequences of size of the key
+    //example : with a key length of four
+    //adsd rdqs qaeq adsd qzeer
+    //if we are in the second iteration (offset variable) of the while loop then we recover all the letter a second position in this sequences
+    //-> ddadz
     tmp.clear();
     for(int i(0); i < (int) m_cypher_text.size(); i++)
     {
@@ -467,7 +512,12 @@ void Analysis::takeLetterAtPos(int key_l, int offset, std::vector<std::string> &
 /***********************************************************************************************************************************************************************/
 int Analysis::calculateDistBetweenLetter(std::string a, std::string b)
 {
+    //in this function we want to calculate the position of the key that has encrypted the original letter
+    // a -> the letter in cypher text choose by user
+    // b -> the letter choose by user in the frequency appearance of a text written in a certain language
     int index_a, index_b;
+
+    //we first recover the index of each letter in the alphabet
     std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
     for(int i(0); i < (int) alphabet.size(); i++)
     {
@@ -482,6 +532,7 @@ int Analysis::calculateDistBetweenLetter(std::string a, std::string b)
         }
     }
 
+    //then we calculate their distances that will give us the index of the corresponding letter in the key
     int dist;
     if(index_b > index_a)
     {
@@ -491,30 +542,30 @@ int Analysis::calculateDistBetweenLetter(std::string a, std::string b)
     {
         dist = (index_a - index_b) % 26;
     }
-    // std::cout << dist << std::endl;
+
     return dist;
 }
 
 /***********************************************************************************************************************************************************************/
 /****************************************************************************** clean **********************************************************************************/
 /***********************************************************************************************************************************************************************/
-void Analysis::clean(std::string b, std::string &alphabet)
-{
-    int index(0);
-    for(std::string::iterator it = alphabet.begin(); it != alphabet.end(); ++it)
-    {
-        if(b == alphabet.substr(index, 1))
-        {
-            frequency_appearance_english.erase(frequency_appearance_english.begin()+index);
-            frequency_appearance_french.erase(frequency_appearance_french.begin()+index);
-            break;
-        }
+// void Analysis::clean(std::string b, std::string &alphabet)
+// {
+//     int index(0);
+//     for(std::string::iterator it = alphabet.begin(); it != alphabet.end(); ++it)
+//     {
+//         if(b == alphabet.substr(index, 1))
+//         {
+//             frequency_appearance_english.erase(frequency_appearance_english.begin()+index);
+//             frequency_appearance_french.erase(frequency_appearance_french.begin()+index);
+//             break;
+//         }
 
-        index++;
-    }
+//         index++;
+//     }
 
-    alphabet.erase(index, 1);
-}
+//     alphabet.erase(index, 1);
+// }
 
 /***********************************************************************************************************************************************************************/
 /************************************************************************* getters/setters *****************************************************************************/
