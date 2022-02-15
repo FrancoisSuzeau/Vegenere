@@ -25,12 +25,14 @@ int main(int argc, char **argv)
     
     //remove or transform all special caractere in the text and transform it to lower case
     _input_text.transformInput();
+    std::cout << "Your message transformed is : " << _input_text.getInput(true) << std::endl;
 
     //Catpure the key
     _input_key.captureInput(">>> ENTER YOUR KEY : ");
 
     //remove or transform all special caractere in the key and transform it to lower case
     _input_key.transformInput();
+    std::cout << "Your key transformed is : " << _input_key.getInput(true) << std::endl;
 
     //Encrypt the text
     _encryption.VigenereEncryption(_input_text.getInput(true), _input_key.getInput(true));
@@ -72,6 +74,10 @@ int main(int argc, char **argv)
         std::cout << ">> You are gonna be RICK ROLLED !" << std::endl;
         system("start https://www.youtube.com/watch?v=dQw4w9WgXcQ");
         std::cout << std::endl;
+    }
+    else
+    {
+        system("start https://www.youtube.com/watch?v=rGSVCdi4-L0");
     }
 
     Bazeries _bazeries_analyst(_encryption.getEncrypted());

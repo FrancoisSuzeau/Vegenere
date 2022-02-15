@@ -75,6 +75,7 @@ void Analysis::calculateOccurences()
 
                 //save it in this variable that we used later
                 occcurence_table[sequence].occurences = count;
+                // std::cout << sequence << " : " << occcurence_table[sequence] << std::endl;
 
                 //because the sequence will appeared an other time if is occurence il >= 2
                 // we don't have to calculate his occurence again so we set it a true
