@@ -22,6 +22,7 @@ CC=g++
 SRC=Main.cpp
 SRC+=VigenereCrypto/Input/Input.cpp VigenereCrypto/Encryption/Encryption.cpp
 SRC+=Analysis/Analysis.cpp
+SRC+=Analysis/Bazeries.cpp
 
 OBJET=$(SRC:.cpp=.o)
 DEP=$(SRC:.cpp=.d)

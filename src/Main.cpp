@@ -1,9 +1,7 @@
 #include "VigenereCrypto/Input/Input.hpp"
 #include "VigenereCrypto/Encryption/Encryption.hpp"
 #include "Analysis/Analysis.hpp"
-
-#include <cassert>
-#include <fstream>
+#include "Analysis/Bazeries.hpp"
 
 int main(int argc, char **argv)
 {
@@ -68,9 +66,20 @@ int main(int argc, char **argv)
     if(_input_text.getInput(true) == _encryption.getDecrypted())
     {
         std::cout << "CONGRATS ! YOU HACKED THE TEXT !" << std::endl;
+        std::cout << std::endl;
         std::cout << "Your reward will come soon ... " << std::endl;
+        std::cout << std::endl;
+        std::cout << ">> You are gonna be RICK ROLLED !" << std::endl;
         system("start https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+        std::cout << std::endl;
     }
+
+    Bazeries _bazeries_analyst(_encryption.getEncrypted());
+
+    //if you want to use this exemple : https://www.apprendre-en-ligne.net/crypto/vigenere/motprobvig.html
+    // Bazeries _bazeries_analyst("bilkopffgmltwoewjcfdshkwonkseovusgrlwhgwfnvkwgggfnrfhyjvsgrfriekdccgbhrysxvkdijahcffgyefsgzwg");
+
+    _bazeries_analyst.likelyWordAnalysis(key_length);
     
     return EXIT_SUCCESS;
 }
